@@ -101,7 +101,6 @@ export default function Home() {
                                 onClick={async () => {
                                   const account = await metamask.connect({ client });
                                   setAccount(account)
-                                  loginWithWallet();
                                 }}
                                 className="w-full max-w-xs font-bold shadow-sm rounded-lg py-2 bg-gray-100 hover:bg-gray-300 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline">
                                 <div className="">
@@ -139,8 +138,7 @@ export default function Home() {
                             </button> : <button
                                  onClick={async () => {
                                   const account = await coinbase.connect({ client });
-                                  setAccount(account);
-                                  loginWithWallet();
+                                  setAccount(account)
                                 }} 
                                 className="w-full max-w-xs font-bold shadow-sm rounded-lg py-2 bg-gray-100 hover:bg-gray-300 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline mt-5">
                                 <div className="mr-4">
@@ -166,7 +164,6 @@ export default function Home() {
                                 onClick={async () => {
                                     const account = await walletconnect.connect({ client });
                                     setAccount(account)
-                                    loginWithWallet();
                                 }}  
                                 className="w-full max-w-xs font-bold shadow-sm rounded-lg py-4 bg-gray-100 hover:bg-gray-300 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline mt-5">
                                 <div className="mr-4">
