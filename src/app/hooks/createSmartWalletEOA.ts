@@ -46,6 +46,6 @@ export const createSmartWalletEOA = async (account:Account)=>{
     personalAccount: account,
   });
 
-  const response = await axios.post('/api/user', {eoaAddress:personalWalletAddress,smartWalletAddress:smartAccount.address});
+  // const response = await axios.post('/api/user', {eoaAddress:personalWalletAddress,smartWalletAddress:smartAccount.address});
 
 }
