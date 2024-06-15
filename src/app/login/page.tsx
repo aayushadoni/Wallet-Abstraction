@@ -41,7 +41,7 @@ export default function Home() {
     const coinbase = createWallet("com.coinbase.wallet");
     const walletconnect = createWallet("walletConnect");
     const auth = useAuth();
-    const address = useAddress();
+    const address = account?.address
 
     const loginWithWallet = async () => {
 
