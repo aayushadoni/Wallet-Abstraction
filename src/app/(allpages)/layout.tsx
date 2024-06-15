@@ -45,7 +45,7 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const clientId = process.env.ThirdWebClientId as string
+          const clientId = process.env.CLIENT_ID as string
           const client = createThirdwebClient({
               clientId: clientId,
             });

@@ -14,10 +14,10 @@ const Providers = ({
   return (
     <RecoilRoot>
     <ThirdwebProvider
-        authConfig={{domain: process.env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN as string}}
+        authConfig={{domain: process.env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN}}
         activeChain={84532} 
-        clientId={process.env.ThirdWebClientId}
-        secretKey={process.env.ThirdWebAPISceret}>
+        clientId={process.env.CLIENT_ID}
+        secretKey={process.env.SECRET_KEY}>
       <SessionProvider>
         {children}
       </SessionProvider>

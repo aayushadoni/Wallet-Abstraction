@@ -9,7 +9,7 @@ export const createSmartWalletEOA = async (account:Account)=>{
 
 
   const client = createThirdwebClient({
-    secretKey: process.env.ThirdWebAPISceret as string,
+    secretKey: process.env.SECRET_KEY as string,
   });
 
   const personalWalletAddress = account.address

@@ -4,7 +4,7 @@ import { Chain } from "thirdweb";
 import { createThirdwebClient } from "thirdweb";
 
 const client = createThirdwebClient({
-  secretKey: process.env.ThirdWebAPISceret as string,
+  secretKey: process.env.SECRET_KEY as string,
 });
 
 export const getWalletTokens = async (address:string,chain:Chain)=>{
