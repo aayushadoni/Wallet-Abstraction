@@ -27,8 +27,8 @@ export async function GET(req: NextRequest) {
   
       return NextResponse.json({ success: true, friendsData: friendsData });
     } catch (error) {
-      console.error('Error to get friends:', error);
-      return NextResponse.json({ error: 'Failed to get friends' }, { status: 500 });
+      console.error('Error adding friend:', error);
+      return NextResponse.json({ error: 'Failed to add friend' }, { status: 500 });
     }
   }
 

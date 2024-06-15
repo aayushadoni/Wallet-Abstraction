@@ -15,7 +15,7 @@ declare global {
       NEXT_PUBLIC_ProjectIdWalletConnect:string,
       NEXT_PUBLIC_PRIVATE_KEY:string,
       NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN:string,
-      NEXT_PUBLIC_DATABASE_URL:string,
+      DATABASE_URL:string,
     }
   }
 }

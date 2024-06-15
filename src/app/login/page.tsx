@@ -14,9 +14,9 @@ import { activeAccountAtom } from '../lib/states';
 
 export default function Home() {
 
-    const clientId = process.env.NEXT_PUBLIC_CLIENT_ID as string;
+    const clientId = process.env.NEXT_PUBLIC_ThirdWebClientId as string
     const client = createThirdwebClient({
-        clientId: clientId
+        clientId: clientId,
       });
 
     const setActiveAccountAtom = useSetRecoilState(activeAccountAtom)
@@ -29,7 +29,8 @@ export default function Home() {
         await signIn("email-login", {
             email:email.current,
             password:password.current,
-            redirect:false
+            redirect:true,
+            callbackUrl:"/wallet"
         })
     }
 
@@ -40,7 +41,7 @@ export default function Home() {
     const coinbase = createWallet("com.coinbase.wallet");
     const walletconnect = createWallet("walletConnect");
     const auth = useAuth();
-    const address = account?.address;
+    const address = useAddress();
 
     const loginWithWallet = async () => {
 
@@ -50,7 +51,8 @@ export default function Home() {
       const payload = await auth?.login();
       await signIn("credentials", {
         payload: JSON.stringify(payload),
-        redirect: false,
+        redirect:true,
+        callbackUrl:"/wallet"
       });
 
 
@@ -60,10 +62,6 @@ export default function Home() {
             setActiveAccountAtom(account);
         }
     };
-
-
-    if(status === "authenticated")
-        redirect("/wallet")
 
   return (
     <div className="h-screen bg-gray-800 text-gray-900 flex justify-center rounded-xl">

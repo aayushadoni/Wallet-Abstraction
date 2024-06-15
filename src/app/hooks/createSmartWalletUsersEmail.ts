@@ -7,10 +7,10 @@ import { MyPrismaStorage } from "./localAsyncStorage";
 export const createSmartWallet = async (email:string)=>{
   
   const client = createThirdwebClient({
-    secretKey: process.env.NEXT_PUBLIC_SECRET_KEY as string,
+    secretKey: process.env.NEXT_PUBLIC_ThirdWebAPISceret as string,
   });
 
-  const personalWallet = new LocalWallet({storage: new MyPrismaStorage(email),secretKey:process.env.NEXT_PUBLIC_SECRET_KEY,clientId:process.env.NEXT_PUBLIC_CLIENT_ID});
+  const personalWallet = new LocalWallet({storage: new MyPrismaStorage(email),secretKey:process.env.NEXT_PUBLIC_ThirdWebAPISceret,clientId:process.env.NEXT_PUBLIC_ThirdWebClientId});
 
   await personalWallet.generate();
 

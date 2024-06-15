@@ -25,7 +25,7 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
 
     const { data: session, status } = useSession()
 
-    if(status != "authenticated")
+    if(status === "unauthenticated")
         redirect("/login")
 
     const activeAccountValue = useRecoilValue(activeAccountAtom);
@@ -45,14 +45,14 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const clientId = process.env.NEXT_PUBLIC_CLIENT_ID as string
+          const clientId = process.env.NEXT_PUBLIC_ThirdWebClientId as string
           const client = createThirdwebClient({
               clientId: clientId,
             });
           
-          if(session.user && session.user.email && status=="authenticated")
+          if(session?.user && session?.user.email && status=="authenticated")
             {
-              const personalWallet = new LocalWallet({storage: new MyPrismaStorage(session.user.email),secretKey:process.env.NEXT_PUBLIC_SECRET_KEY,clientId:process.env.NEXT_PUBLIC_CLIENT_ID});
+              const personalWallet = new LocalWallet({storage: new MyPrismaStorage(session.user.email),secretKey:process.env.NEXT_PUBLIC_ThirdWebAPISceret,clientId:process.env.NEXT_PUBLIC_ThirdWebClientId});
               const savedPersonalWallet = await personalWallet.getSavedData(new MyPrismaStorage(session.user.email))
     
               if (savedPersonalWallet !== null && savedPersonalWallet !== undefined) {
@@ -74,7 +74,7 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
               //   personalAccount: personalWallet,
               // });
             }
-            else if(session.user.address && status=="authenticated")
+            else if(session?.user.address && status=="authenticated")
               {
                 if(activeAccountValue != null)
                   {

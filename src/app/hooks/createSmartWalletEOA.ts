@@ -9,7 +9,7 @@ export const createSmartWalletEOA = async (account:Account)=>{
 
 
   const client = createThirdwebClient({
-    secretKey: process.env.NEXT_PUBLIC_SECRET_KEY as string,
+    secretKey: process.env.NEXT_PUBLIC_ThirdWebAPISceret as string,
   });
 
   const personalWalletAddress = account.address
@@ -46,6 +46,6 @@ export const createSmartWalletEOA = async (account:Account)=>{
     personalAccount: account,
   });
 
-  // const response = await axios.post('/api/user', {eoaAddress:personalWalletAddress,smartWalletAddress:smartAccount.address});
+  const response = await axios.post('/api/user', {eoaAddress:personalWalletAddress,smartWalletAddress:smartAccount.address});
 
 }
