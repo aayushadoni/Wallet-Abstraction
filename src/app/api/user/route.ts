@@ -1,28 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/app/lib/db';
-import { authOptions } from '@/app/lib/auth';
-import { getServerSession } from 'next-auth';
+import { db } from '@/app/lib/db'
 
 export async function POST(req: NextRequest) {
     try {
-      const session = await getServerSession(authOptions);
       const body = await req.json();
   
-      if (!session) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-      }
-  
-      if (session.user.email) {
-        const { smartWalletAddress } = body;
+      if (body.email) {
+        const { email,smartWalletAddress } = body;
         const addedUser = await db.userEmail.update({
-            where: { email: session.user.email },
+            where: { email: email },
             data: {
               smartWalletAddress:smartWalletAddress,
             },
             include: { friends: true },
           });
 
-      } else if (session.user.address) {
+      } else if (body.eoaAddress) {
         const { eoaAddress, smartWalletAddress } = body;
         const addedUser = await db.userEOA.create({
             data:{
