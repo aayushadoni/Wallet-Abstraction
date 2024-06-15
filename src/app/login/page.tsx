@@ -40,7 +40,7 @@ export default function Home() {
     const coinbase = createWallet("com.coinbase.wallet");
     const walletconnect = createWallet("walletConnect");
     const auth = useAuth();
-    const address = useAddress();
+    const address = account?.address;
 
     const loginWithWallet = async () => {
 
@@ -101,8 +101,6 @@ export default function Home() {
                                 onClick={async () => {
                                   const account = await metamask.connect({ client });
                                   setAccount(account)
-                                  console.log(account)
-                                  loginWithWallet()
                                 }}
                                 className="w-full max-w-xs font-bold shadow-sm rounded-lg py-2 bg-gray-100 hover:bg-gray-300 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline">
                                 <div className="">
