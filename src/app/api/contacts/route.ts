@@ -3,7 +3,7 @@ import { db } from '@/app/lib/db';
 import { authOptions } from '@/app/lib/auth';
 import { getServerSession } from 'next-auth';
 
-export async function GET(res: NextResponse) {
+export async function GET(req: NextRequest) {
     try {
       const session = await getServerSession(authOptions);
   
@@ -27,8 +27,8 @@ export async function GET(res: NextResponse) {
   
       return NextResponse.json({ success: true, friendsData: friendsData });
     } catch (error) {
-      console.error('Error adding friend:', error);
-      return NextResponse.json({ error: 'Failed to add friend' }, { status: 500 });
+      console.error('Error to get friends:', error);
+      return NextResponse.json({ error: 'Failed to get friends' }, { status: 500 });
     }
   }
 
