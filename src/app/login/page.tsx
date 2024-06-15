@@ -49,7 +49,7 @@ export default function Home() {
         setAccount(account);
 
       const payload = await auth?.login();
-      await signIn("credentials", {
+      await signIn("Credentials", {
         payload: JSON.stringify(payload),
         redirect:true,
         callbackUrl:"/wallet"
