@@ -7,10 +7,10 @@ import { MyPrismaStorage } from "./localAsyncStorage";
 export const createSmartWallet = async (email:string)=>{
   
   const client = createThirdwebClient({
-    secretKey: process.env.SECRET_KEY as string,
+    secretKey: process.env.NEXT_PUBLIC_SECRET_KEY as string,
   });
 
-  const personalWallet = new LocalWallet({storage: new MyPrismaStorage(email),secretKey:process.env.ThirdWebAPISceret,clientId:process.env.ThirdWebClientId});
+  const personalWallet = new LocalWallet({storage: new MyPrismaStorage(email),secretKey:process.env.NEXT_PUBLIC_SECRET_KEY,clientId:process.env.NEXT_PUBLIC_CLIENT_ID});
 
   await personalWallet.generate();
 
@@ -23,7 +23,7 @@ export const createSmartWallet = async (email:string)=>{
 
   const dappOwenrWallet = privateKeyToAccount({
     client,
-    privateKey: process.env.PRIVATE_KEY as string,
+    privateKey: process.env.NEXT_PUBLIC_PRIVATE_KEY as string,
   });
 
   const contract = getContract({ 

@@ -83,7 +83,7 @@ export const authOptions = {
     pages: {
         signIn: "/login"
     },
-    secret: process.env.JWT_SECRET || "secret",
+    secret: process.env.NEXT_PUBLIC_JWT_SECRET || "secret",
     callbacks: {
 
      async jwt({ token, user }:any) {

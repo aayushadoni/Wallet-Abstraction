@@ -45,14 +45,14 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const clientId = process.env.CLIENT_ID as string
+          const clientId = process.env.NEXT_PUBLIC_CLIENT_ID as string
           const client = createThirdwebClient({
               clientId: clientId,
             });
           
           if(session.user && session.user.email && status=="authenticated")
             {
-              const personalWallet = new LocalWallet({storage: new MyPrismaStorage(session.user.email),secretKey:process.env.ThirdWebAPISceret,clientId:process.env.ThirdWebClientId});
+              const personalWallet = new LocalWallet({storage: new MyPrismaStorage(session.user.email),secretKey:process.env.NEXT_PUBLIC_SECRET_KEY,clientId:process.env.NEXT_PUBLIC_CLIENT_ID});
               const savedPersonalWallet = await personalWallet.getSavedData(new MyPrismaStorage(session.user.email))
     
               if (savedPersonalWallet !== null && savedPersonalWallet !== undefined) {
@@ -81,7 +81,7 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
                     const wallet = smartWallet({
                       chain: baseSepolia,
                       gasless: true,
-                      factoryAddress: process.env.FactoryAddress
+                      factoryAddress: process.env.NEXT_PUBLIC_FactoryAddress
                     });
                      
                     const account = await wallet.connect({
@@ -104,7 +104,7 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
                     const wallet = smartWallet({
                       chain: baseSepolia,
                       gasless: true,
-                      factoryAddress: process.env.FactoryAddress
+                      factoryAddress: process.env.NEXT_PUBLIC_FactoryAddress
                     });
                      
                     const account = await wallet.connect({
@@ -125,7 +125,7 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
                     const wallet = smartWallet({
                       chain: baseSepolia,
                       gasless: true,
-                      factoryAddress: process.env.FactoryAddress
+                      factoryAddress: process.env.NEXT_PUBLIC_FactoryAddress
                     });
                      
                     const account = await wallet.connect({
@@ -142,7 +142,7 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
                     const wallet = smartWallet({
                       chain: baseSepolia,
                       gasless: true,
-                      factoryAddress: process.env.FactoryAddress
+                      factoryAddress: process.env.NEXT_PUBLIC_FactoryAddress
                     });
                      
                     const account = await wallet.connect({

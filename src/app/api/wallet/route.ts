@@ -38,7 +38,7 @@ type Coin = {
 export async function GET() {
   try {
     const response = await axios.get(
-      `https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=${process.env.API_KEY}`,
+      `https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=${process.env.NEXT_PUBLIC_API_KEY}`,
       {
         headers: {
           Accept: '*/*',

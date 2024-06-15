@@ -9,14 +9,14 @@ export const createSmartWalletEOA = async (account:Account)=>{
 
 
   const client = createThirdwebClient({
-    secretKey: process.env.SECRET_KEY as string,
+    secretKey: process.env.NEXT_PUBLIC_SECRET_KEY as string,
   });
 
   const personalWalletAddress = account.address
   
   const dappOwenrWallet = privateKeyToAccount({
     client,
-    privateKey: process.env.PRIVATE_KEY as string,
+    privateKey: process.env.NEXT_PUBLIC_PRIVATE_KEY as string,
   });
 
   const contract = getContract({ 
@@ -38,7 +38,7 @@ export const createSmartWalletEOA = async (account:Account)=>{
   const wallet = smartWallet({
     chain: baseSepolia,
     gasless: true,
-    factoryAddress: process.env.FactoryAddress
+    factoryAddress: process.env.NEXT_PUBLIC_FactoryAddress
   });
    
   const smartAccount = await wallet.connect({

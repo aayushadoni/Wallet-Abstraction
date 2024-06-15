@@ -16,8 +16,8 @@ const Providers = ({
     <ThirdwebProvider
         authConfig={{domain: process.env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN}}
         activeChain={84532} 
-        clientId={process.env.CLIENT_ID}
-        secretKey={process.env.SECRET_KEY}>
+        clientId={process.env.NEXT_PUBLIC_CLIENT_ID}
+        secretKey={process.env.NEXT_PUBLIC_SECRET_KEY}>
       <SessionProvider>
         {children}
       </SessionProvider>

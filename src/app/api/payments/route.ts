@@ -13,7 +13,7 @@ export async function POST (req: NextRequest, res: NextResponse){
 
     let event;
     try {
-        event = stripe.webhooks.constructEvent(rawBody,sig!,process.env.EndPointSecret!);
+        event = stripe.webhooks.constructEvent(rawBody,sig!,process.env.NEXT_PUBLIC_EndPointSecret!);
     }
     catch(e:any){
         console.error(e);
