@@ -42,6 +42,7 @@ export default function Home() {
     const walletconnect = createWallet("walletConnect");
     const auth = useAuth();
     const address = useAddress();
+    console.log(address);
 
     const loginWithWallet = async () => {
 
