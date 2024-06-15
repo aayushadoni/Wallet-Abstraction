@@ -47,6 +47,7 @@ export default function Home() {
 
         const account = await metamask.connect({ client });
         setAccount(account);
+        console.log(account);
 
       const payload = await auth?.login();
       await signIn("credentials", {
