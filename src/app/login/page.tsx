@@ -14,9 +14,10 @@ import { activeAccountAtom } from '../lib/states';
 
 export default function Home() {
 
-    const clientId = process.env.ThirdWebClientId as string
+    const clientId = process.env.ThirdWebClientId as string;
+    const secretKey = process.env.ThirdWebAPISceret as string;
     const client = createThirdwebClient({
-        clientId: clientId,
+        secretKey:secretKey
       });
 
     const setActiveAccountAtom = useSetRecoilState(activeAccountAtom)
