@@ -1,18 +1,18 @@
 import { useSetRecoilState } from "recoil";
 import { tokenBalanceAtomFamily } from "../lib/states";
 import { getWalletTokens } from "./getWalletTokens";
-import { ethereum, bsc, avalanche, optimism, arbitrum, base, polygon } from "thirdweb/chains";
+import { sepolia, bscTestnet, avalancheFuji, optimismSepolia, arbitrumSepolia, baseSepolia, polygonAmoy } from "thirdweb/chains";
 
   export const getTokenBalance = async (address: string) => {
 
     const chains = [
-        { name: 'Ethereum', chain: ethereum, atomName:"ETH" },
-        { name: 'Binance Smart Chain', chain: bsc, atomName:"BSC" },
-        { name: 'Polygon', chain: polygon, atomName:"MATIC" },
-        { name: 'Avalanche', chain: avalanche, atomName:"AVALANCHE" },
-        { name: 'Optimism', chain: optimism, atomName:"OPTIMISM" },
-        { name: 'Arbitrum', chain: arbitrum, atomName:"ARBITRUM" },
-        { name: 'Base', chain: base, atomName:"BASE" },
+        { name: 'Ethereum', chain: sepolia, atomName:"ETH" },
+        { name: 'Binance Smart Chain', chain: bscTestnet, atomName:"BSC" },
+        { name: 'Polygon', chain: polygonAmoy, atomName:"MATIC" },
+        { name: 'Avalanche', chain: avalancheFuji, atomName:"AVALANCHE" },
+        { name: 'Optimism', chain: optimismSepolia, atomName:"OPTIMISM" },
+        { name: 'Arbitrum', chain: arbitrumSepolia, atomName:"ARBITRUM" },
+        { name: 'Base', chain: baseSepolia, atomName:"BASE" },
       ]; 
 
     await Promise.all(
