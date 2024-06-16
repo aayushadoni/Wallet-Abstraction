@@ -5,15 +5,24 @@ import { TrendingCard } from "@/components/TrendingCard";
 import { MarketCard } from "@/components/MarketCard";
 import { HoldingsCard } from "@/components/HoldingsCard";
 import { useRecoilValue } from "recoil";
-import { smartWalletAddressAtom,ethBalanceAtom } from "@/app/lib/states";
+import { smartWalletAddressAtom,tokenBalanceAtomFamily } from "@/app/lib/states";
 import SupportedCoins from "@/components/SupportedCoins";
 
 export default function Dashboard() {
 
   const [marketData, setMarketData] = useState([]);
   const [top3Data, settop3Data] = useState([]);
+
   const smartWalletAddressValue = useRecoilValue(smartWalletAddressAtom);
-  const ethBalanceValue = useRecoilValue(ethBalanceAtom);
+
+  const ethBalance = useRecoilValue(tokenBalanceAtomFamily('ETH'));
+  const bscBalance = useRecoilValue(tokenBalanceAtomFamily('BSC'));
+  const maticBalance = useRecoilValue(tokenBalanceAtomFamily('MATIC'));
+  const avalancheBalance = useRecoilValue(tokenBalanceAtomFamily('AVALANCHE'));
+  const tetherBalance = useRecoilValue(tokenBalanceAtomFamily('TETHER'));
+  const optimismBalance = useRecoilValue(tokenBalanceAtomFamily('OPTIMISM'));
+  const arbitrumBalance = useRecoilValue(tokenBalanceAtomFamily('ARBITRUM'));
+  const baseBalance = useRecoilValue(tokenBalanceAtomFamily('BASE'));
 
   useEffect(() => {
     const fetchMarketData = async () => {
@@ -37,17 +46,14 @@ export default function Dashboard() {
 
   const walletBalance = 1000;
   const holdingsData = [
-    { id: 1, name: "ETH", quantity: ethBalanceValue?.displayValue||"0", value: ethBalanceValue?.value||"0", image: "https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=032" },
-    { id: 2, name: "BSC", quantity: "0", value: "0", image: "https://cryptologos.cc/logos/bnb-bnb-logo.svg?v=032" },
-    { id: 3, name: "Matic", quantity: "0", value: "0", image: "https://cryptologos.cc/logos/polygon-matic-logo.svg?v=032" },
-    // { id: 4, name: "Cronos", quantity: 100, value: 150, image: "https://cryptologos.cc/logos/cronos-cro-logo.svg?v=032" },
-    // { id: 5, name: "Fantom", quantity: 300, value: 400, image: "https://cryptologos.cc/logos/fantom-ftm-logo.svg?v=032" },
-    // { id: 6, name: "Harmony", quantity: 250, value: 350, image: "https://cryptologos.cc/logos/harmony-one-logo.svg?v=032" },
-    { id: 7, name: "Avalanche", quantity: "0", value: "0", image: "https://cryptologos.cc/logos/avalanche-avax-logo.svg?v=032" },
-    { id: 8, name: "Tether", quantity: "0", value: "0", image: "https://cryptologos.cc/logos/tether-usdt-logo.svg?v=032" },
-    { id: 9, name: "Optimism", quantity: "0", value: "0", image: "https://cryptologos.cc/logos/optimism-ethereum-op-logo.svg?v=032" },
-    { id: 10, name: "Arbitrum", quantity: "0", value: "0", image: "https://cryptologos.cc/logos/arbitrum-arb-logo.svg?v=032" },
-    { id: 11, name: "Base", quantity: "0", value: "0", image: "https://tokenlogo.xyz/assets/chain/base.svg" },
+    { id: 1, name: "ETH", quantity: ethBalance || "0", value: ethBalance || "0", image: "https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=032" },
+    { id: 2, name: "BSC", quantity: bscBalance || "0", value: bscBalance || "0", image: "https://cryptologos.cc/logos/bnb-bnb-logo.svg?v=032" },
+    { id: 3, name: "Matic", quantity: maticBalance || "0", value: maticBalance || "0", image: "https://cryptologos.cc/logos/polygon-matic-logo.svg?v=032" },
+    { id: 7, name: "Avalanche", quantity: avalancheBalance || "0", value: avalancheBalance || "0", image: "https://cryptologos.cc/logos/avalanche-avax-logo.svg?v=032" },
+    { id: 8, name: "Tether", quantity: tetherBalance|| "0", value: tetherBalance || "0", image: "https://cryptologos.cc/logos/tether-usdt-logo.svg?v=032" },
+    { id: 9, name: "Optimism", quantity: optimismBalance || "0", value: optimismBalance || "0", image: "https://cryptologos.cc/logos/optimism-ethereum-op-logo.svg?v=032" },
+    { id: 10, name: "Arbitrum", quantity: arbitrumBalance || "0", value: arbitrumBalance || "0", image: "https://cryptologos.cc/logos/arbitrum-arb-logo.svg?v=032" },
+    { id: 11, name: "Base", quantity: baseBalance || "0", value: baseBalance || "0", image: "https://tokenlogo.xyz/assets/chain/base.svg" },
   ];
 
   return (

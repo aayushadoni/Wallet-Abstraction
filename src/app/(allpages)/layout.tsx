@@ -11,14 +11,12 @@ import { signOut, useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { smartWallet,createWallet, injectedProvider } from "thirdweb/wallets";
 import { useEffect,useState } from "react";
-import { LocalWallet } from "@thirdweb-dev/wallets";
-import { MyPrismaStorage } from "../hooks/localAsyncStorage";
 import { baseSepolia,sepolia} from "thirdweb/chains";
 import { createThirdwebClient } from "thirdweb";
-import { useConnectedWallets  } from "thirdweb/react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { activeAccountAtom,smartWalletAddressAtom,ethBalanceAtom } from "../lib/states";
+import { activeAccountAtom,smartWalletAddressAtom} from "../lib/states";
 import { getWalletTokens } from "../hooks/getWalletTokens";
+import { getTokenBalance } from "../hooks/getTokenBalance";
 
 
 export default function Layout({ children }: { children: React.ReactNode }): JSX.Element {
@@ -31,15 +29,8 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
     const activeAccountValue = useRecoilValue(activeAccountAtom);
     const setSmartWalletAddress = useSetRecoilState(smartWalletAddressAtom);
     const setActiveAccount = useSetRecoilState(activeAccountAtom);
-    const setEthBalance = useSetRecoilState(ethBalanceAtom);
     const [activeNetwork, setActiveNetwork] = useState(baseSepolia.name);
 
-    function formatTokenValue(value: bigint, decimals: number): string {
-      const divisor = BigInt(10 ** decimals);
-      const integerPart = value / divisor;
-      const fractionalPart = value % divisor;
-      return `${integerPart.toString()}.${fractionalPart.toString().padStart(decimals, '0')}`;
-    }
    
 
     useEffect(() => {
@@ -50,38 +41,17 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
               clientId: clientId,
             });
           
-          if(session?.user && session?.user.email && status=="authenticated")
+          if(session?.user.email && status=="authenticated")
             {
-              const personalWallet = new LocalWallet({storage: new MyPrismaStorage(session.user.email),secretKey:process.env.NEXT_PUBLIC_ThirdWebAPISceret,clientId:process.env.NEXT_PUBLIC_ThirdWebClientId});
-              const savedPersonalWallet = await personalWallet.getSavedData(new MyPrismaStorage(session.user.email))
-    
-              if (savedPersonalWallet !== null && savedPersonalWallet !== undefined) {
-                  await personalWallet.import({
-                    encryptedJson: savedPersonalWallet.data,
-                    password: "password",
-                  });
-              } else {
-                console.error("Error: encryptedJson is null or undefined.");
-              }
               
-              const wallet = smartWallet({
-                chain: baseSepolia,
-                gasless: true,
-              });
-               
-              // const account = await wallet.connect({
-              //   client,
-              //   personalAccount: personalWallet,
-              // });
             }
-            else if(session?.user.address && status=="authenticated")
+            else if(session?.user.eoaAddress && status=="authenticated")
               {
                 if(activeAccountValue != null)
                   {
                     const wallet = smartWallet({
                       chain: baseSepolia,
                       gasless: true,
-                      factoryAddress: process.env.NEXT_PUBLIC_FactoryAddress
                     });
                      
                     const account = await wallet.connect({
@@ -90,10 +60,8 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
                     });
                     
                     setSmartWalletAddress(account.address);
-                    const balanceEth = await getWalletTokens(account.address,sepolia);
-                    const {displayValue,value,decimals} = balanceEth;
-                    const val=formatTokenValue(value,decimals)
-                    setEthBalance({displayValue:displayValue,value:val});
+                    await getTokenBalance(account.address);
+                    
                   }
                 else
                 {
@@ -104,7 +72,6 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
                     const wallet = smartWallet({
                       chain: baseSepolia,
                       gasless: true,
-                      factoryAddress: process.env.NEXT_PUBLIC_FactoryAddress
                     });
                      
                     const account = await wallet.connect({
@@ -112,10 +79,7 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
                       personalAccount: metamaskWallet,
                     });
                     setSmartWalletAddress(account.address);
-                    const balanceEth = await getWalletTokens(account.address,sepolia);
-                    const {displayValue,value,decimals} = balanceEth;
-                    const val=formatTokenValue(value,decimals)
-                    setEthBalance({displayValue:displayValue,value:val});
+                    await getTokenBalance(account.address);
                     
                   }
                   else if (injectedProvider("com.coinbase.wallet")) {
@@ -125,7 +89,6 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
                     const wallet = smartWallet({
                       chain: baseSepolia,
                       gasless: true,
-                      factoryAddress: process.env.NEXT_PUBLIC_FactoryAddress
                     });
                      
                     const account = await wallet.connect({
@@ -133,7 +96,7 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
                       personalAccount: val,
                     });
                     setSmartWalletAddress(account.address);
-                    const balanceEth = getWalletTokens(account.address,baseSepolia);
+                    await getTokenBalance(account.address);
                   }
                   else if (injectedProvider("walletConnect")) {
                     const walletconnect = createWallet("walletConnect");
@@ -142,7 +105,6 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
                     const wallet = smartWallet({
                       chain: baseSepolia,
                       gasless: true,
-                      factoryAddress: process.env.NEXT_PUBLIC_FactoryAddress
                     });
                      
                     const account = await wallet.connect({
@@ -150,6 +112,7 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
                       personalAccount: val,
                     });
                     setSmartWalletAddress(account.address);
+                    await getTokenBalance(account.address);
                   }
                 }  
 
@@ -166,11 +129,12 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
 
     const router = useRouter()
 
+  console.log(session?.user);
+
     const handleNetworkSwitch = (network: string) => {
       setActiveNetwork(network);
       // Additional logic for switching networks
   };
-
 
   return (
     <div className="flex min-h-screen bg-gray-900">

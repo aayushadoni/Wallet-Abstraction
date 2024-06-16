@@ -7,14 +7,18 @@ const client = createThirdwebClient({
   secretKey: process.env.NEXT_PUBLIC_ThirdWebAPISceret as string,
 });
 
-export const getWalletTokens = async (address:string,chain:Chain)=>{
+export const getWalletTokens = async (address: string, chain: Chain) => {
+  try {
+    const balance = await getWalletBalance({
+      address: address,
+      client: client,
+      chain: chain,
+    });
 
-    const balanceEth = await getWalletBalance({
-        address:address,
-        client:client,
-        chain:chain,
-      });
-
-      return balanceEth;
-
-}
+    return balance;
+  } catch (error) {
+    console.error(`Error fetching balance for chain ${chain.name}:`, error);
+    return null;
+  }
+  
+};
