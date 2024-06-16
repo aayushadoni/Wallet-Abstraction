@@ -5,7 +5,7 @@ declare module "next-auth" {
     user: {
       id:string,
       email?:string,
-      address?:string,
+      eoaAddress?:string,
       smartWallet:string,
     }
   }

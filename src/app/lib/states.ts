@@ -1,4 +1,4 @@
-import { atom } from 'recoil';
+import { atom,atomFamily } from 'recoil';
 import { Account } from 'thirdweb/wallets';
 
 const smartWalletAddressAtom = atom<string>({
@@ -11,9 +11,9 @@ const activeAccountAtom = atom<Account|null>({
   default: null,
 });
 
-const ethBalanceAtom = atom<{displayValue:string,value:string}|null>({
-  key: 'ethBalance',
+const tokenBalanceAtomFamily = atomFamily<string | null, string>({
+  key: 'tokenBalanceAtomFamily',
   default: null,
-})
+});
 
-export { smartWalletAddressAtom, activeAccountAtom, ethBalanceAtom };
+export { smartWalletAddressAtom, activeAccountAtom, tokenBalanceAtomFamily };

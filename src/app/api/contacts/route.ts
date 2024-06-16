@@ -16,9 +16,9 @@ export async function GET(req: NextRequest) {
           where: { email: session.user.email },
           include: { friends: true },
         });
-      } else if (session.user.address) {
+      } else if (session.user.eoaAddress) {
         friendsData = await db.userEOA.findFirst({
-          where: { eoaAddress: session.user.address },
+          where: { eoaAddress: session.user.eoaAddress },
           include: { friends: true },
         });
       } else {
@@ -62,9 +62,9 @@ export async function POST(req: NextRequest) {
         },
         include: { friends: true },
       });
-    } else if (session.user.address) {
+    } else if (session.user.eoaAddress) {
       addedFriend = await db.userEOA.update({
-        where: { eoaAddress: session.user.address },
+        where: { eoaAddress: session.user.eoaAddress },
         data: {
           friends: {
             create: {
@@ -116,9 +116,9 @@ export async function DELETE(req: NextRequest) {
           },
         });
       }
-    } else if (session.user.address) {
+    } else if (session.user.eoaAddress) {
       const user = await db.userEOA.findUnique({
-        where: { eoaAddress: session.user.address },
+        where: { eoaAddress: session.user.eoaAddress },
         include: { friends: true },
       });
 

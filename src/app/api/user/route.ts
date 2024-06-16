@@ -7,30 +7,45 @@ export async function POST(req: NextRequest) {
     try {
       const session = await getServerSession(authOptions);
       const body = await req.json();
+
+      const {type} = body;
   
-      if (!session) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-      }
-  
-      if (session.user.email) {
-        const { smartWalletAddress } = body;
-        const addedUser = await db.userEmail.update({
-            where: { email: session.user.email },
+      if (type=="email") {
+        const { email, smartWalletAddress } = body;
+
+        const existingUser = await db.userEmail.findFirst({
+          where: {
+              email: email
+          }
+      });
+        if(existingUser)
+        {const addedUser = await db.userEmail.update({
+            where: { email: email },
             data: {
               smartWalletAddress:smartWalletAddress,
-            },
-            include: { friends: true },
-          });
-
-      } else if (session.user.address) {
-        const { eoaAddress, smartWalletAddress } = body;
-        const addedUser = await db.userEOA.create({
-            data:{
-              eoaAddress:eoaAddress,
-              transaction_no:0,
-              smartWalletAddress:smartWalletAddress
             }
           });
+        }
+
+      } else if (type=="eoa") {
+        const { eoaAddress, smartWalletAddress } = body;
+
+        const existingUser = await db.userEOA.findFirst({
+          where: {
+              eoaAddress: eoaAddress
+          }
+      });
+
+      if(existingUser)
+        {
+          const addedUser = await db.userEOA.update({
+            where: { eoaAddress: eoaAddress },
+            data: {
+              smartWalletAddress:smartWalletAddress,
+            }
+          });
+        }
+        
       } else {
         return NextResponse.json({ error: 'User session is invalid' }, { status: 400 });
       }

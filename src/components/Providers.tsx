@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { ThirdwebProvider} from "@thirdweb-dev/react";
+import { ThirdwebProvider } from "thirdweb/react";
 import { SessionProvider } from "next-auth/react";
 import { RecoilRoot } from 'recoil';
 
@@ -13,11 +13,7 @@ const Providers = ({
 
   return (
     <RecoilRoot>
-    <ThirdwebProvider
-        authConfig={{domain: process.env.NEXT_PUBLIC_THIRDWEB_AUTH_DOMAIN as string}}
-        activeChain={84532} 
-        clientId={process.env.NEXT_PUBLIC_ThirdWebClientId}
-        secretKey={process.env.NEXT_PUBLIC_ThirdWebAPISceret}>
+    <ThirdwebProvider>
       <SessionProvider>
         {children}
       </SessionProvider>
