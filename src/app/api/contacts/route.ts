@@ -141,3 +141,58 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to delete friend' }, { status: 500 });
   }
 }
+
+export async function PATCH(req: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions);
+    const body = await req.json();
+    const { id, name, address } = body;
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    if (!id || !name || !address) {
+      return NextResponse.json({ error: 'ID, name, and address are required' }, { status: 400 });
+    }
+
+    let user;
+
+    if (session.user.email) {
+      user = await db.userEmail.findFirst({
+        where: { email: session.user.email },
+        include: { friends: true },
+      });
+    } else if (session.user.eoaAddress) {
+      user = await db.userEOA.findFirst({
+        where: { eoaAddress: session.user.eoaAddress },
+        include: { friends: true },
+      });
+    }
+
+    if (!user) {
+      return NextResponse.json({ error: 'User session is invalid' }, { status: 400 });
+    }
+
+    const updatedFriend = await db.friend.update({
+      where: {
+        id,
+        OR: [
+          { userEmailId: user.id },
+          { userEOAId: user.id },
+        ],
+      },
+      data: { name, address },
+    });
+
+    if (!updatedFriend) {
+      return NextResponse.json({ error: 'Friend not found or could not be updated' }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error updating friend:', error);
+    return NextResponse.json({ error: 'Failed to update friend' }, { status: 500 });
+  }
+}
+

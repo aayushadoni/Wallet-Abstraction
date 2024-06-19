@@ -97,6 +97,7 @@ export const authOptions = {
             name: 'wallet-login',
             credentials: {
                 walletAddress: { label: "address", type: "text", placeholder: "0x4FD12b822937efc335793bDc8717b436A49a8F78", required: false },
+                signature: { label: "signature", type: "text", placeholder: "0x4FD12b822937efc335793bDc8717b436A49a8F78", required: false },
             },
             async authorize(credentials: any) {
                 const { success } = walletCredentialsInput.safeParse({

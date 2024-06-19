@@ -7,15 +7,13 @@ import { smartWalletAddressAtom } from '@/app/lib/states';
 import { useRecoilValue } from 'recoil';
 import { createThirdwebClient } from "thirdweb";
 import { NATIVE_TOKEN_ADDRESS } from "thirdweb";
-
-import { sepolia, bscTestnet, avalancheFuji, optimismSepolia, arbitrumSepolia, baseSepolia, polygonAmoy } from "thirdweb/chains";
+import Image from 'next/image';
 
 const supportedCoins = [
   { id: ethereum.id, name: "ETH", img: "https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=032" },
   { id: bsc.id, name: "BSC", img: "https://cryptologos.cc/logos/bnb-bnb-logo.svg?v=032" },
   { id: polygon.id, name: "Matic", img: "https://cryptologos.cc/logos/polygon-matic-logo.svg?v=032" },
   { id: avalanche.id, name: "Avalanche", img: "https://cryptologos.cc/logos/avalanche-avax-logo.svg?v=032" },
-  { id: polygonAmoy.id, name: "Tether", img: "https://cryptologos.cc/logos/tether-usdt-logo.svg?v=032" },
   { id: optimism.id, name: "Optimism", img: "https://cryptologos.cc/logos/optimism-ethereum-op-logo.svg?v=032" },
   { id: arbitrum.id, name: "Arbitrum", img: "https://cryptologos.cc/logos/arbitrum-arb-logo.svg?v=032" },
   { id: base.id, name: "Base", img: "https://tokenlogo.xyz/assets/chain/base.svg" },
@@ -56,17 +54,21 @@ export const PaymentCard = (): JSX.Element => {
   });
 
   const handleGetQuote = () => {
-    setQuoteData(quote);
-    console.log(quote);
-    setIsModalOpen(true);
+    if(!isLoading)
+      {setQuoteData(quote)
+      setIsModalOpen(true);}
   };
   const router = useRouter()
 
   return (
     <div className="p-6 rounded-xl shadow-md bg-gray-800 text-white h-full w-full mx-auto flex flex-col">
-      <h1 className="text-lg font-semibold mb-4 flex items-center">
-        Buy Crypto With Fiat <span className="text-blue-500 ml-2">On Ramp Payments</span>
+      <h1 className="text-lg font-semibold mb-4 flex items-center space-x-4 p-2 rounded-lg">
+        <span>Buy Crypto With Fiat </span>
+        <span className='font-sans font-normal text-md'>powered by</span>
+        <Image src="/Thirdweb_logo.png" alt="Wallet connect Icon" width={40} height={40} className='ml-2'/>
+        <span className="text-white">ThirdWeb</span>
       </h1>
+      
       <div className="mb-4 relative">
         <label htmlFor="coin" className="block text-sm font-medium text-gray-300 mb-2">
           Select Coin
@@ -83,12 +85,11 @@ export const PaymentCard = (): JSX.Element => {
           <HiOutlineChevronDown className="text-gray-400" />
         </button>
         {dropdownOpen && (
-          <div className="absolute z-10 w-full max-h-40 overflow-y-auto bg-gray-700 rounded-xl mt-1">
+          <div className="absolute z-10 w-full max-h-40 overflow-y-auto bg-gray-700 rounded-xl mt-1 no-scrollbar">
             {supportedCoins.map((coin) => (
               <div
                 key={coin.id}
-                className="flex items-center gap-2 p-2 cursor-pointer hover
-rounded-xl"
+                className="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-800 rounded-xl"
                 onClick={() => handleCoinChange(coin)}
               >
                 <img src={coin.img} alt={coin.name} className="w-6 h-6 rounded-full" />
@@ -100,7 +101,7 @@ rounded-xl"
       </div>
       <div className="mb-4">
         <label htmlFor="amount" className="block text-sm font-medium text-gray-300 mb-2">
-          Amount (USD)
+          Amount of Tokens
         </label>
         <input
           type="number"
@@ -108,7 +109,7 @@ rounded-xl"
           value={amount}
           onChange={handleAmountChange}
           className="w-full bg-gray-700 text-white p-2 rounded-lg"
-          placeholder="Enter amount in USD"
+          placeholder="Enter amount of Tokens"
         />
       </div>
       <button
@@ -120,7 +121,7 @@ text-white text-md font-semibold py-2 px-2 rounded-lg mt-2"
       </button>
 
       {isModalOpen && (
-        <div className="fixed top-0 left-0 w-full h-full backdrop-blur-sm bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed top-0 left-0 w-full h-full backdrop-blur-sm bg-gray-900 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-gray-900 rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
             <div className="flex justify-between items-center border-b-2 pb-2 mb-4">
               <h2 className="text-xl font-semibold text-gray-400">Quote Information</h2>
@@ -144,7 +145,7 @@ text-white text-md font-semibold py-2 px-2 rounded-lg mt-2"
                 </svg>
               </button>
             </div>
-            <div className="space-y-4 text-gray-400">
+            <div className={`${isLoading ?`animate-pulse` : ``} space-y-4 text-gray-400`}>
               <div>
                 <label className="block mb-1 text-sm font-medium">Intent ID</label>
                 <div className="bg-gray-800 p-2 rounded-md">{quoteData?.intentId}</div>

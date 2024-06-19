@@ -6,7 +6,7 @@ import { createSmartWalletEOA } from '@/app/hooks/createSmartWalletEOA';
 import { createThirdwebClient } from "thirdweb";
 import { createWallet, injectedProvider } from "thirdweb/wallets";
 import { Account } from 'thirdweb/wallets';
-import { useSetRecoilState } from 'recoil';
+import { useSetRecoilState,useRecoilValue } from 'recoil';
 import { activeAccountAtom } from '@/app/lib/states';
 import { preAuthenticate } from "thirdweb/wallets/in-app";
 
@@ -21,6 +21,7 @@ export default function Home() {
       });
 
     const setActiveAccountAtom = useSetRecoilState(activeAccountAtom)
+    const activeAccountValue = useRecoilValue(activeAccountAtom);
 
     const email = useRef("");
     const verificationCode = useRef("");
@@ -58,33 +59,48 @@ export default function Home() {
 
     const loginWithWallet = async (walletType:string) => {
 
-        if(walletType=="meamask" && account==undefined)
+        if(walletType=="metamask" && account==undefined)
             {
                 const account = await metamask.connect({ client });
                 setAccount(account);
+                const signature = await account.signMessage({message:"Enter The Wallet Abstraction App"})
+                await signIn("wallet-login", {
+                    walletAddress:account.address,
+                    signature:signature,
+                    redirect:true,
+                    callbackUrl:"/wallet"
+                });
+                setActiveAccountAtom(account);
+                await createSmartWalletEOA(account);
             }
-        else if(walletType=="meamask" && account==undefined)
+        else if(walletType=="coinbase" && account==undefined)
             {
-                const account = await metamask.connect({ client });
+                const account = await coinbase.connect({ client });
                 setAccount(account);
+                const signature = await account.signMessage({message:"Enter The Wallet Abstraction App"})
+                await signIn("wallet-login", {
+                    walletAddress:account.address,
+                    signature:signature,
+                    redirect:true,
+                    callbackUrl:"/wallet"
+                });
+                setActiveAccountAtom(account);
+                await createSmartWalletEOA(account);
             }
-        else if(walletType=="meamask" && account==undefined)
+        else if(walletType=="walletconnect" && account==undefined)
             {
-                const account = await metamask.connect({ client });
+                const account = await walletconnect.connect({ client });
                 setAccount(account);
+                const signature = await account.signMessage({message:"Enter The Wallet Abstraction App"})
+                await signIn("wallet-login", {
+                    walletAddress:account.address,
+                    signature:signature,
+                    redirect:true,
+                    callbackUrl:"/wallet"
+                });
+                setActiveAccountAtom(account);
+                await createSmartWalletEOA(account);
             }
-        else if(account !== undefined)
-        {
-
-            await account.signMessage({message:"Enter The Wallet Abstraction App"})
-            await signIn("wallet-login", {
-                walletAddress:account.address,
-                redirect:true,
-                callbackUrl:"/wallet"
-            });
-            await createSmartWalletEOA(account);
-
-        }
     }    
 
     return (
@@ -99,8 +115,6 @@ export default function Home() {
                                 <div className="flex flex-col items-center">
                                 <button
                                         onClick={async () => {
-                                          const account = await metamask.connect({ client });
-                                          setAccount(account)
                                           loginWithWallet("metamask");
                                         }}
                                         className="w-full max-w-xs font-bold shadow-sm rounded-lg py-2 bg-gray-100 hover:bg-gray-300 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline">
@@ -127,8 +141,7 @@ export default function Home() {
                                     
                                  <button
                                          onClick={async () => {
-                                          const account = await coinbase.connect({ client });
-                                          setAccount(account)
+                                          loginWithWallet("coinbase");
                                         }} 
                                         className="w-full max-w-xs font-bold shadow-sm rounded-lg py-2 bg-gray-100 hover:bg-gray-300 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline mt-5">
                                         <div className="mr-4">
@@ -142,8 +155,7 @@ export default function Home() {
                                     </button>  
                                     <button
                                         onClick={async () => {
-                                            const account = await walletconnect.connect({ client });
-                                            setAccount(account)
+                                            loginWithWallet("walletconnect");
                                         }}  
                                         className="w-full max-w-xs font-bold shadow-sm rounded-lg py-4 bg-gray-100 hover:bg-gray-300 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline mt-5">
                                         <div className="mr-4">

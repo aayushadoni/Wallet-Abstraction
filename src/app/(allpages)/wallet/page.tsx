@@ -7,6 +7,7 @@ import { HoldingsCard } from "@/components/HoldingsCard";
 import { useRecoilValue } from "recoil";
 import { smartWalletAddressAtom,tokenBalanceAtomFamily } from "@/app/lib/states";
 import SupportedCoins from "@/components/SupportedCoins";
+import { useFetchTokenBalances } from "@/app/hooks/getTokenBalance";
 
 export default function Dashboard() {
 
@@ -14,15 +15,9 @@ export default function Dashboard() {
   const [top3Data, settop3Data] = useState([]);
 
   const smartWalletAddressValue = useRecoilValue(smartWalletAddressAtom);
-
-  const ethBalance = useRecoilValue(tokenBalanceAtomFamily('ETH'));
-  const bscBalance = useRecoilValue(tokenBalanceAtomFamily('BSC'));
-  const maticBalance = useRecoilValue(tokenBalanceAtomFamily('MATIC'));
-  const avalancheBalance = useRecoilValue(tokenBalanceAtomFamily('AVALANCHE'));
-  const tetherBalance = useRecoilValue(tokenBalanceAtomFamily('TETHER'));
-  const optimismBalance = useRecoilValue(tokenBalanceAtomFamily('OPTIMISM'));
-  const arbitrumBalance = useRecoilValue(tokenBalanceAtomFamily('ARBITRUM'));
-  const baseBalance = useRecoilValue(tokenBalanceAtomFamily('BASE'));
+  const fetchTokenBalance = useFetchTokenBalances(smartWalletAddressValue);
+                    
+  
 
   useEffect(() => {
     const fetchMarketData = async () => {
@@ -36,6 +31,8 @@ export default function Dashboard() {
         const top3Coins = data.coins.slice(0, 3);
         setMarketData(top15Coins);
         settop3Data(top3Coins);
+        if(smartWalletAddressValue != '')
+          await fetchTokenBalance();
       } catch (error) {
         console.error(error);
       }
@@ -43,6 +40,15 @@ export default function Dashboard() {
 
     fetchMarketData();
   }, []);
+
+  const ethBalance = useRecoilValue(tokenBalanceAtomFamily('ETH'));
+  const bscBalance = useRecoilValue(tokenBalanceAtomFamily('BSC'));
+  const maticBalance = useRecoilValue(tokenBalanceAtomFamily('MATIC'));
+  const avalancheBalance = useRecoilValue(tokenBalanceAtomFamily('AVALANCHE'));
+  const tetherBalance = useRecoilValue(tokenBalanceAtomFamily('TETHER'));
+  const optimismBalance = useRecoilValue(tokenBalanceAtomFamily('OPTIMISM'));
+  const arbitrumBalance = useRecoilValue(tokenBalanceAtomFamily('ARBITRUM'));
+  const baseBalance = useRecoilValue(tokenBalanceAtomFamily('BASE'));
 
   const walletBalance = 1000;
   const holdingsData = [

@@ -15,8 +15,7 @@ import { baseSepolia,sepolia} from "thirdweb/chains";
 import { createThirdwebClient } from "thirdweb";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { activeAccountAtom,smartWalletAddressAtom} from "../lib/states";
-import { getWalletTokens } from "../hooks/getWalletTokens";
-import { getTokenBalance } from "../hooks/getTokenBalance";
+import { useFetchTokenBalances } from "@/app/hooks/getTokenBalance";
 
 
 export default function Layout({ children }: { children: React.ReactNode }): JSX.Element {
@@ -30,7 +29,7 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
     const setSmartWalletAddress = useSetRecoilState(smartWalletAddressAtom);
     const setActiveAccount = useSetRecoilState(activeAccountAtom);
     const [activeNetwork, setActiveNetwork] = useState(baseSepolia.name);
-
+    
    
 
     useEffect(() => {
@@ -60,8 +59,6 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
                     });
                     
                     setSmartWalletAddress(account.address);
-                    await getTokenBalance(account.address);
-                    
                   }
                 else
                 {
@@ -79,8 +76,6 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
                       personalAccount: metamaskWallet,
                     });
                     setSmartWalletAddress(account.address);
-                    await getTokenBalance(account.address);
-                    
                   }
                   else if (injectedProvider("com.coinbase.wallet")) {
                     const coinbase = createWallet("com.coinbase.wallet");
@@ -96,9 +91,8 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
                       personalAccount: val,
                     });
                     setSmartWalletAddress(account.address);
-                    await getTokenBalance(account.address);
                   }
-                  else if (injectedProvider("walletConnect")) {
+                  else {
                     const walletconnect = createWallet("walletConnect");
                     const val = await walletconnect.connect({ client });
                     setActiveAccount(val)
@@ -112,12 +106,13 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
                       personalAccount: val,
                     });
                     setSmartWalletAddress(account.address);
-                    await getTokenBalance(account.address);
                   }
                 }  
 
               }
-
+              const smartWalletValue = useRecoilValue(smartWalletAddressAtom);
+              const fetchTokenBalance = useFetchTokenBalances(smartWalletValue);
+              await fetchTokenBalance();
 
         } catch (error) {
           console.error('Error fetching data:', error);
@@ -128,8 +123,6 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
     }, [status]);
 
     const router = useRouter()
-
-  console.log(session?.user);
 
     const handleNetworkSwitch = (network: string) => {
       setActiveNetwork(network);
