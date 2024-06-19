@@ -1,12 +1,6 @@
 import { db } from "./db";
 import CredentialsProvider from "next-auth/providers/credentials"
 import z from "zod";
-import { createSmartWalletEmail } from "@/app/hooks/createSmartWalletEmail";
-import {
-    inAppWallet
-  } from "thirdweb/wallets/in-app";
-
-import { createThirdwebClient } from "thirdweb";
 
 const emailCredentialsInput = z.object({
     email: z.string().email(),
@@ -17,10 +11,6 @@ const walletCredentialsInput = z.object({
     walletAddress: z.string(),
 });
 
-const client = createThirdwebClient({
-    secretKey: process.env.NEXT_PUBLIC_ThirdWebAPISceret as string,
-  });
-
 
 export const authOptions = {
     providers: [
@@ -29,7 +19,7 @@ export const authOptions = {
           name: 'email-login',
           credentials: {
             email: { label: "email", type: "email", placeholder: "a@b.com", required: false },
-            verificationCode: { label: "verificationCode", type: "string", required: false }
+            verificationCode: { label: "verificationCode", type: "text", placeholder: "20588", required: false },
           },
           async authorize(credentials: any) {
 
@@ -49,40 +39,23 @@ export const authOptions = {
                         id: existingUser.id.toString(),
                         email: existingUser.email,
                         smartWalletAddress: existingUser.smartWalletAddress,
+                        verificationCode:credentials.verificationCode,
                     }
             }
 
             try {
-
-                const wallet = inAppWallet();
-                console.log(wallet);
-
-                const account = await wallet.connect({
-                client,
-                strategy: "email",
-                email:credentials.email,
-                verificationCode:credentials.verificationCode,
-                });
               
                 const user = await db.userEmail.create({
                     data: {
                         email: credentials.email,
                         transaction_no:0
                     }
-                });
-
-                console.log(account);
-
-                console.log(user);
-
-                await createSmartWalletEmail(account)
-                
+                });                
 
                 return {
                     id: user.id.toString(),
-                    eoaAddress:null,
                     email: user.email,
-                    smartWalletAddress:user.smartWalletAddress
+                    verificationCode:credentials.verificationCode,
                 }
             } catch(e) {
                 console.error(e);
@@ -116,6 +89,7 @@ export const authOptions = {
                         id: existingUser.id.toString(),
                         eoaAddress: existingUser.eoaAddress,
                         transaction_no: existingUser.transaction_no,
+                        smartWallet:existingUser.smartWalletAddress,
                     }
                 }
 

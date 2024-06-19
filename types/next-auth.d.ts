@@ -6,7 +6,8 @@ declare module "next-auth" {
       id:string,
       email?:string,
       eoaAddress?:string,
-      smartWallet:string,
+      smartWallet?:string,
+      verificationCode?:string,
     }
   }
 }

@@ -7,8 +7,10 @@ import { createThirdwebClient } from "thirdweb";
 import { createWallet, injectedProvider } from "thirdweb/wallets";
 import { Account } from 'thirdweb/wallets';
 import { useSetRecoilState,useRecoilValue } from 'recoil';
-import { activeAccountAtom } from '@/app/lib/states';
+import { activeAccountAtom,smartWalletAddressAtom } from '@/app/lib/states';
 import { preAuthenticate } from "thirdweb/wallets/in-app";
+import { inAppWallet } from "thirdweb/wallets/in-app";
+import { createSmartWalletEmail } from "@/app/hooks/createSmartWalletEmail";
 
 
 
@@ -20,15 +22,16 @@ export default function Home() {
         clientId: clientId,
       });
 
-    const setActiveAccountAtom = useSetRecoilState(activeAccountAtom)
-    const activeAccountValue = useRecoilValue(activeAccountAtom);
+    const setActiveAccountAtom = useSetRecoilState(activeAccountAtom);
+
+    const { data: session, status } = useSession()
 
     const email = useRef("");
     const verificationCode = useRef("");
 
     const onSubmit = async (e:any)=>{
         e.preventDefault();
-        await signIn("email-login", {
+            await signIn("email-login", {
             email:email.current,
             verificationCode:verificationCode.current,
             redirect:true,
@@ -45,8 +48,6 @@ export default function Home() {
       setCodeSent(true);
     }
 
-    const { data: session, status } = useSession()
-
     const [account, setAccount] = useState<Account>();
     const [codeSent, setCodeSent] = useState<Boolean>(false);
 
@@ -54,8 +55,6 @@ export default function Home() {
     const coinbase = createWallet("com.coinbase.wallet");
     const walletconnect = createWallet("walletConnect");
     const address = account?.address
-
-    console.log(address);
 
     const loginWithWallet = async (walletType:string) => {
 

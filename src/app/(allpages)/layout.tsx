@@ -3,7 +3,7 @@ import { IoLogoBuffer } from "react-icons/io";
 import { FaWallet } from "react-icons/fa";
 import { FaMoneyBillTransfer } from "react-icons/fa6";
 import { PiHandDepositFill } from "react-icons/pi";
-import { FaGasPump } from "react-icons/fa";
+import { FaLayerGroup } from "react-icons/fa";
 import { MdPowerSettingsNew } from "react-icons/md";
 import { FaUserFriends } from "react-icons/fa";
 import { useRouter } from 'next/navigation'
@@ -16,6 +16,8 @@ import { createThirdwebClient } from "thirdweb";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { activeAccountAtom,smartWalletAddressAtom} from "../lib/states";
 import { useFetchTokenBalances } from "@/app/hooks/getTokenBalance";
+import { inAppWallet } from "thirdweb/wallets/in-app";
+import { createSmartWalletEmail } from "@/app/hooks/createSmartWalletEmail";
 
 
 export default function Layout({ children }: { children: React.ReactNode }): JSX.Element {
@@ -28,8 +30,9 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
     const activeAccountValue = useRecoilValue(activeAccountAtom);
     const setSmartWalletAddress = useSetRecoilState(smartWalletAddressAtom);
     const setActiveAccount = useSetRecoilState(activeAccountAtom);
-    const [activeNetwork, setActiveNetwork] = useState(baseSepolia.name);
-    
+    const [activeNetwork, setActiveNetwork] = useState(baseSepolia.name)
+
+    console.log(session?.user);
    
 
     useEffect(() => {
@@ -40,9 +43,31 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
               clientId: clientId,
             });
           
-          if(session?.user.email && status=="authenticated")
-            {
-              
+          if(session?.user.email && status=="authenticated" && session?.user.verificationCode)
+            { 
+                const eoaWallet = inAppWallet();
+
+                const eoaAccount = await eoaWallet.connect({
+                client,
+                strategy: "email",
+                email:session?.user.email,
+                verificationCode:session?.user.verificationCode,
+                });
+
+                  const wallet = smartWallet({
+                    chain: baseSepolia,
+                    gasless: true,
+                  });
+                   
+                  const account = await wallet.connect({
+                    client,
+                    personalAccount: eoaAccount,
+                  });
+                  
+                  setSmartWalletAddress(account.address);
+                  setActiveAccount(eoaAccount); 
+                  await createSmartWalletEmail(eoaAccount,account);
+
             }
             else if(session?.user.eoaAddress && status=="authenticated")
               {
@@ -110,19 +135,19 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
                 }  
 
               }
-              const smartWalletValue = useRecoilValue(smartWalletAddressAtom);
-              const fetchTokenBalance = useFetchTokenBalances(smartWalletValue);
-              await fetchTokenBalance();
 
         } catch (error) {
           console.error('Error fetching data:', error);
         }
+        await fetchTokenBalance();
       };
   
       fetchData();
     }, [status]);
 
     const router = useRouter()
+    const smartWalletValue = useRecoilValue(smartWalletAddressAtom);
+    const fetchTokenBalance = useFetchTokenBalances(smartWalletValue);
 
     const handleNetworkSwitch = (network: string) => {
       setActiveNetwork(network);
@@ -156,9 +181,9 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
                 <FaUserFriends size={22}/>
                 <div className="text-md font-medium text-gray-100">Contacts</div>
               </div>
-              <div onClick={() => router.push('/gastopup')} className="flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:text-white hover:bg-orange-600 transition-colors duration-200">
-                <FaGasPump size={22}/>
-                <div className="text-md font-medium text-gray-100">Gas Fees</div>
+              <div onClick={() => router.push('/batchTransactions')} className="flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:text-white hover:bg-orange-600 transition-colors duration-200">
+                <FaLayerGroup size={22}/>
+                <div className="text-md font-medium text-gray-100">Batch Transactions</div>
               </div>
             </div>
           </div>
@@ -173,7 +198,7 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
           <span className="absolute inline-flex h-3 w-3 rounded-full bg-sky-500 opacity-100 mb-[34px] ml-[90px]"></span>
         </div>
         <div className="flex flex-row rounded-full bg-gray-700 text-gray-200 items-center cursor-pointer p-2">
-          <FaGasPump size={20} className="mr-2 text-sm font-medium text-gray-200" />
+          <FaLayerGroup size={20} className="mr-2 text-sm font-medium text-gray-200" />
           <div className="flex-grow text-sm font-medium text-gray-200 px-1">124 USDC</div>
         </div>
         <button onClick={()=>signOut()} className="ml-2 p-2 rounded-full bg-gray-700">

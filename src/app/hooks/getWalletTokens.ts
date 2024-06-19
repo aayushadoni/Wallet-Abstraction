@@ -9,7 +9,6 @@ const client = createThirdwebClient({
 
 export const getWalletTokens = async (address: string, chain: Chain) => {
   try {
-    console.log({address,chain})
     const balance = await getWalletBalance({
       address: address,
       client: client,
