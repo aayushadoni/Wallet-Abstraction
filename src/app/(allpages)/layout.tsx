@@ -1,7 +1,7 @@
 "use client"
 import { IoLogoBuffer } from "react-icons/io";
 import { FaWallet } from "react-icons/fa";
-import { FaMoneyBillTransfer } from "react-icons/fa6";
+import { TbTransactionBitcoin } from "react-icons/tb";
 import { PiHandDepositFill } from "react-icons/pi";
 import { FaLayerGroup } from "react-icons/fa";
 import { MdPowerSettingsNew } from "react-icons/md";
@@ -173,9 +173,9 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
                 <PiHandDepositFill size={22}/>
                 <div className="text-md font-medium text-gray-100">Deposit</div>
               </div>
-              <div onClick={() => router.push('/p2p')} className="flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:text-white hover:bg-orange-600 transition-colors duration-200">
-                <FaMoneyBillTransfer size={22}/>
-                <div className="text-md font-medium text-gray-100">P2P Transfer</div>
+              <div onClick={() => router.push('/transactions')} className="flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:text-white hover:bg-orange-600 transition-colors duration-200">
+                <TbTransactionBitcoin size={22}/>
+                <div className="text-md font-medium text-gray-100">Transaction History</div>
               </div>
               <div onClick={() => router.push('/contacts')} className="flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:text-white hover:bg-orange-600 transition-colors duration-200">
                 <FaUserFriends size={22}/>
@@ -192,15 +192,6 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
     <div className="flex-1 p-6">
     <div className="flex justify-end">
       <div className="flex flex-row gap-1">
-        <div className="flex flex-row rounded-full bg-gray-700 text-gray-200 border-2 border-sky-600 items-center cursor-pointer p-2">
-          <div className="flex-grow text-sm font-sm text-gray-200 px-1">{baseSepolia.name}</div>
-          <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-sky-400 opacity-100 mb-[34px] ml-[90px]"></span>
-          <span className="absolute inline-flex h-3 w-3 rounded-full bg-sky-500 opacity-100 mb-[34px] ml-[90px]"></span>
-        </div>
-        <div className="flex flex-row rounded-full bg-gray-700 text-gray-200 items-center cursor-pointer p-2">
-          <FaLayerGroup size={20} className="mr-2 text-sm font-medium text-gray-200" />
-          <div className="flex-grow text-sm font-medium text-gray-200 px-1">124 USDC</div>
-        </div>
         <button onClick={()=>signOut()} className="ml-2 p-2 rounded-full bg-gray-700">
           <MdPowerSettingsNew size={20} className="text-gray-200 hover:text-red-500" />
         </button>

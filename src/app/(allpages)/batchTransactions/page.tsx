@@ -50,7 +50,7 @@ const BatchTransactions = () => {
               JSON Editor
             </button>
             <button className="font-semibold text-md text-blue-300 hover:bg-gray-700 px-4 py-2 rounded-lg">
-              Transaction History
+              Past Transactions
             </button>
           </div>
           <div className="flex gap-x-2 items-center">

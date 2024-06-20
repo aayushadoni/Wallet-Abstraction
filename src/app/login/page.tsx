@@ -134,7 +134,7 @@ export default function Home() {
                                             </svg>
                                         </div>
                                         <span className="ml-4">
-                                            Connect
+                                            {address ? 'Sign In': 'Connect' }
                                         </span>
                                     </button>
                                     
@@ -149,7 +149,7 @@ export default function Home() {
                                         </svg>
                                         </div>
                                         <span className="ml-1">
-                                            SignIn
+                                        {address ? 'Sign In': 'Connect' }
                                         </span>
                                     </button>  
                                     <button
@@ -157,11 +157,11 @@ export default function Home() {
                                             loginWithWallet("walletconnect");
                                         }}  
                                         className="w-full max-w-xs font-bold shadow-sm rounded-lg py-4 bg-gray-100 hover:bg-gray-300 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline mt-5">
-                                        <div className="mr-4">
-                                          <Image src="/WalletConnect-icon.svg" alt="Wallet connect Icon" width={40} height={40} className='ml-8'/>
+                                        <div className="mr-2">
+                                          <Image src="/WalletConnect-icon.svg" alt="Wallet connect Icon" width={40} height={40} className=''/>
                                         </div>
                                         <span className="">
-                                            SignIn
+                                        {address ? 'Sign In': 'Connect' }
                                         </span>
                                     </button>
         

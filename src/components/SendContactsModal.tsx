@@ -1,18 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { sepolia, bscTestnet, avalancheFuji, optimismSepolia, arbitrumSepolia, baseSepolia, polygonAmoy, Chain } from "thirdweb/chains";
-import { useRecoilValue,useSetRecoilState } from "recoil";
-import { smartWalletAddressAtom,activeAccountAtom } from "@/app/lib/states";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { smartWalletAddressAtom, activeAccountAtom } from "@/app/lib/states";
 import { HiOutlineClipboardCopy } from "react-icons/hi";
 import { AiOutlineCheck } from "react-icons/ai";
 import { HiOutlineChevronDown } from 'react-icons/hi';
 import { createThirdwebClient } from "thirdweb";
 import { smartWallet } from "thirdweb/wallets";
+import { prepareTransaction, toWei } from "thirdweb";
+import { sendAndConfirmTransaction } from "thirdweb";
 
 interface SendModalProps {
     showSendModal: boolean;
     toggleSendModal: () => void;
-    sendData: {id:number,name:string,address:string};
+    sendData: { id: number, name: string, address: string };
 }
 
 const SendContactsModal: React.FC<SendModalProps> = ({ showSendModal, toggleSendModal, sendData }) => {
@@ -25,67 +27,20 @@ const SendContactsModal: React.FC<SendModalProps> = ({ showSendModal, toggleSend
         clientId: clientId,
     });
 
-    const wallet = smartWallet({
-        chain: baseSepolia,
-        gasless: true,
-      });
-      
-      let account
-
-    useEffect(()=>{
-        const connectFunction = async () => {
-            if(activeAccountValue!=null)
-                {
-                    const account = await wallet.connect({
-                        client,
-                        personalAccount: activeAccountValue,
-                      });
-                }
-
-        }
-
-        connectFunction();
-
-    },[activeAccountValue])
-
-    const sendFunction = async ()=>{
-
-        if(activeAccountValue!=null)
-            {
-                const account = await wallet.connect({
-                    client,
-                    personalAccount: activeAccountValue,
-                  });
-                
-                const tx = {
-                    account:account,
-                    gasless:true,
-                    
-
-                }  
-
-                account.sendTransaction
-            }
-
-    }
-
-
-
-
     const toAddress = useRef("");
     const fromAddress = useRef("");
     const token = useRef("");
-    const fromChain = useRef("");
-    const toChain = useRef("");
+    const fromChain = useRef(sepolia);
+    const toChain = useRef(sepolia);
 
     const suportedChains = [
-        { id: 1, name: "ETH", image: "https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=032",chain:sepolia },
-        { id: 2, name: "BSC", image: "https://cryptologos.cc/logos/bnb-bnb-logo.svg?v=032", chain:bscTestnet },
-        { id: 3, name: "Matic", image: "https://cryptologos.cc/logos/polygon-matic-logo.svg?v=032", chain:polygonAmoy },
-        { id: 7, name: "Avalanche", image: "https://cryptologos.cc/logos/avalanche-avax-logo.svg?v=032", chain:avalancheFuji },
-        { id: 9, name: "Optimism", image: "https://cryptologos.cc/logos/optimism-ethereum-op-logo.svg?v=032",chain:optimismSepolia },
-        { id: 10, name: "Arbitrum", image: "https://cryptologos.cc/logos/arbitrum-arb-logo.svg?v=032",chain:arbitrumSepolia },
-        { id: 11, name: "Base", image: "https://tokenlogo.xyz/assets/chain/base.svg",chain:baseSepolia },
+        { id: 1, name: "ETH", image: "https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=032", chain: sepolia },
+        { id: 2, name: "BSC", image: "https://cryptologos.cc/logos/bnb-bnb-logo.svg?v=032", chain: bscTestnet },
+        { id: 3, name: "Matic", image: "https://cryptologos.cc/logos/polygon-matic-logo.svg?v=032", chain: polygonAmoy },
+        { id: 7, name: "Avalanche", image: "https://cryptologos.cc/logos/avalanche-avax-logo.svg?v=032", chain: avalancheFuji },
+        { id: 9, name: "Optimism", image: "https://cryptologos.cc/logos/optimism-ethereum-op-logo.svg?v=032", chain: optimismSepolia },
+        { id: 10, name: "Arbitrum", image: "https://cryptologos.cc/logos/arbitrum-arb-logo.svg?v=032", chain: arbitrumSepolia },
+        { id: 11, name: "Base", image: "https://tokenlogo.xyz/assets/chain/base.svg", chain: baseSepolia },
     ];
 
     const smartWalletAddressValue = useRecoilValue(smartWalletAddressAtom)
@@ -96,6 +51,8 @@ const SendContactsModal: React.FC<SendModalProps> = ({ showSendModal, toggleSend
     const [selectedToChain, setSelectedToChain] = useState(suportedChains[0]);
     const [selectedFromChain, setSelectedFromChain] = useState(suportedChains[0]);
     const [selectedToken, setSelectedToken] = useState(suportedChains[0]);
+    const [amount, setAmount] = useState('');
+    const [crossChain, setcrossChain] = useState(false);
 
     const copyToClipboard = (address: string) => {
         navigator.clipboard.writeText(address);
@@ -103,35 +60,63 @@ const SendContactsModal: React.FC<SendModalProps> = ({ showSendModal, toggleSend
         setTimeout(() => setCopiedAddress(null), 3000);
     };
 
-    const handleToChainChange = (chain: { id: number, name: string, image: string, chain:Chain }) => {
+    const handleToChainChange = (chain: { id: number, name: string, image: string, chain: Chain }) => {
         setSelectedToChain(chain);
         setDropdownOpenToChain(false);
-      };
+    };
 
-      const handleFromChainChange = (chain: { id: number, name: string, image: string, chain:Chain }) => {
+    const handleFromChainChange = (chain: { id: number, name: string, image: string, chain: Chain }) => {
         setSelectedFromChain(chain);
         setDropdownOpenFromChain(false);
-      };
-      
-      const handleTokenChange = (chain: { id: number, name: string, image: string, chain:Chain }) => {
+    };
+
+    const handleTokenChange = (chain: { id: number, name: string, image: string, chain: Chain }) => {
         setSelectedToken(chain);
         setDropdownOpenToken(false);
-      }; 
+    };
+
+    const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setAmount(event.target.value);
+      };
+
+    const togleCrossChain = () => {
+        setcrossChain(!crossChain);
+    }
 
     const handleSendSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
 
         try {
-            const response = await axios.post('/api/send', {
-                toAddress: toAddress.current,
-                fromAddress: fromAddress.current,
-                token: token.current,
-                fromChain: fromChain.current,
-                toChain: toChain.current,
-            });
-            if (response.status === 200) {
-                console.log('Transfer initiated successfully');
-                toggleSendModal();
+            if (!crossChain) {
+                if (activeAccountValue != null) {
+
+                    const wallet = smartWallet({
+                        chain: baseSepolia,
+                        gasless: true,
+                      });
+                       
+                    const account = await wallet.connect({
+                        client,
+                        personalAccount: activeAccountValue,
+                    });
+
+                    const transaction = prepareTransaction({
+                        to: `${sendData.address}`,
+                        chain: selectedFromChain.chain,
+                        client: client,
+                        value: toWei(`${amount}`),
+                       });
+
+                       console.log(transaction)
+                       
+                    const receipt = await sendAndConfirmTransaction({
+                    transaction,
+                    account: account,
+                    });
+
+                    toggleSendModal();
+                    console.log(receipt);
+                }
             }
         } catch (error) {
             console.error('Failed to initiate transfer:', error);
@@ -188,7 +173,7 @@ const SendContactsModal: React.FC<SendModalProps> = ({ showSendModal, toggleSend
 
                             <div className="inline-flex flex-row rounded-full gap-10">
                                 <div>
-                                <label className="block mb-1 text-sm font-medium text-gray-400">From Chain</label>
+                                    <label className="block mb-1 text-sm font-medium text-gray-400">From Chain</label>
                                     <button
                                         id="coin"
                                         onClick={() => setDropdownOpenFromChain(!dropdownOpenFromChain)}
@@ -216,9 +201,9 @@ const SendContactsModal: React.FC<SendModalProps> = ({ showSendModal, toggleSend
                                     )}
                                 </div>
 
-                                <div>
-                                <label className="block mb-1 text-sm font-medium text-gray-400">To Chain</label>
-                                <button
+                                {!crossChain ? <></> : <div>
+                                    <label className="block mb-1 text-sm font-medium text-gray-400">To Chain</label>
+                                    <button
                                         id="coin"
                                         onClick={() => setDropdownOpenToChain(!dropdownOpenToChain)}
                                         className="w-full bg-gray-800 text-white p-2 rounded-xl flex justify-between items-center"
@@ -243,43 +228,45 @@ const SendContactsModal: React.FC<SendModalProps> = ({ showSendModal, toggleSend
                                             ))}
                                         </div>
                                     )}
-                                </div>
+                                </div>}
 
                             </div>
                             <div>
                                 <label className="block mb-1 text-sm font-medium text-gray-400">Token</label>
-                                    <button
-                                        id="coin"
-                                        onClick={() => setDropdownOpenToken(!dropdownOpenToken)}
-                                        className="w-full bg-gray-800 text-white p-2 rounded-xl flex justify-between items-center"
-                                    >
-                                        <div className="flex items-center gap-2">
-                                            <img src={selectedToken.image} alt={selectedToken.name} className="w-6 h-6 rounded-full" />
-                                            <span className='text-md'>{selectedToken.name}</span>
-                                        </div>
-                                        <HiOutlineChevronDown className="text-gray-400 mx-2" />
-                                    </button>
-                                    {dropdownOpenToken && (
-                                        <div className="absolute z-10 w-[413px] max-h-40 overflow-y-auto bg-gray-700 rounded-xl mt-1 no-scrollbar">
-                                            {suportedChains.map((chain) => (
-                                                <div
-                                                    key={chain.id}
-                                                    className="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-800 rounded-xl"
-                                                    onClick={() => handleTokenChange(chain)}
-                                                >
-                                                    <img src={chain.image} alt={chain.name} className="w-6 h-6 rounded-full" />
-                                                    <span className='text-md font-md '>{chain.name}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
+                                <button
+                                    id="coin"
+                                    onClick={() => setDropdownOpenToken(!dropdownOpenToken)}
+                                    className="w-full bg-gray-800 text-white p-2 rounded-xl flex justify-between items-center"
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <img src={selectedToken.image} alt={selectedToken.name} className="w-6 h-6 rounded-full" />
+                                        <span className='text-md'>{selectedToken.name}</span>
+                                    </div>
+                                    <HiOutlineChevronDown className="text-gray-400 mx-2" />
+                                </button>
+                                {dropdownOpenToken && (
+                                    <div className="absolute z-10 w-[413px] max-h-40 overflow-y-auto bg-gray-700 rounded-xl mt-1 no-scrollbar">
+                                        {suportedChains.map((chain) => (
+                                            <div
+                                                key={chain.id}
+                                                className="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-800 rounded-xl"
+                                                onClick={() => handleTokenChange(chain)}
+                                            >
+                                                <img src={chain.image} alt={chain.name} className="w-6 h-6 rounded-full" />
+                                                <span className='text-md font-md '>{chain.name}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                             <div>
                                 <label className="block mb-1 text-sm font-medium text-gray-400">Amount</label>
                                 <input
                                     type="number"
                                     className="w-full bg-gray-800 border border-gray-700 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    step="any"
                                     placeholder="Enter amount"
+                                    onChange={handleAmountChange}
                                 />
                             </div>
                             <div>
@@ -302,7 +289,7 @@ const SendContactsModal: React.FC<SendModalProps> = ({ showSendModal, toggleSend
                                 </div>
                             </div>
                             <div className="flex items-center">
-                                <input type="checkbox" className="form-checkbox h-4 w-4 text-blue-600" />
+                                <input onChange={() => { togleCrossChain() }} type="checkbox" className="form-checkbox h-4 w-4 text-blue-600" />
                                 <label className="ml-2 block text-sm text-gray-400">I want to send cross-chain</label>
                             </div>
                             <div className="flex justify-end">

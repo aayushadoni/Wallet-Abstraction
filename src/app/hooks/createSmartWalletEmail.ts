@@ -1,7 +1,5 @@
 import axios from "axios";
-import { createThirdwebClient } from "thirdweb";
-import { smartWallet,Account } from "thirdweb/wallets";
-import { baseSepolia } from "thirdweb/chains";
+import { Account } from "thirdweb/wallets";
 
 export const createSmartWalletEmail = async (eoaAccount:Account,smartWallet:Account)=>{
 
