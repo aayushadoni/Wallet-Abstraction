@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Transaction" ALTER COLUMN "blockNumber" SET DATA TYPE TEXT,
+ALTER COLUMN "gasUsed" SET DATA TYPE TEXT;

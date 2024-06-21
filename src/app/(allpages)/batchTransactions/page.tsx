@@ -152,7 +152,7 @@ const handleAbiChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
                 style={{ width: '100%', minHeight: '200px', borderRadius: '10px' }}
               />
               :
-              <div className="flex items-center justify-center w-full">
+              <div className="flex items-center justify-center w-full h-ful">
                 <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-blue-00 border-dashed rounded-lg cursor-pointer bg-gray-800 hover:bg-gray-700 border-blue-500 hover:border-blue-400">
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
                     <BsFiletypeJson size={44} className="mb-2" />

@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'User session is invalid' }, { status: 400 });
     }
 
-    return NextResponse.json({ success: true, friend: addedFriend });
+    return NextResponse.json({ success: true, friend: addedFriend },{ status: 200 });
   } catch (error) {
     console.error('Error adding friend:', error);
     return NextResponse.json({ error: 'Failed to add friend' }, { status: 500 });

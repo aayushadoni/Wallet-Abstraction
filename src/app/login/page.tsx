@@ -4,13 +4,11 @@ import Image from 'next/image';
 import { signIn, useSession } from 'next-auth/react';
 import { createSmartWalletEOA } from '@/app/hooks/createSmartWalletEOA';
 import { createThirdwebClient } from "thirdweb";
-import { createWallet, injectedProvider } from "thirdweb/wallets";
+import { createWallet } from "thirdweb/wallets";
 import { Account } from 'thirdweb/wallets';
-import { useSetRecoilState,useRecoilValue } from 'recoil';
-import { activeAccountAtom,smartWalletAddressAtom } from '@/app/lib/states';
+import { useSetRecoilState } from 'recoil';
+import { activeAccountAtom } from '@/app/lib/states';
 import { preAuthenticate } from "thirdweb/wallets/in-app";
-import { inAppWallet } from "thirdweb/wallets/in-app";
-import { createSmartWalletEmail } from "@/app/hooks/createSmartWalletEmail";
 
 
 

@@ -8,31 +8,56 @@ datasource db {
 }
 
 model UserEmail {
-  id                 Int                 @id @default(autoincrement())
-  email              String              @unique
-  smartWalletAddress String?             @unique
-  transaction_no     Int                 
-  friends            Friend[]            @relation("UserEmailFriends")
+  id                 Int                  @id @default(autoincrement())
+  email              String               @unique
+  smartWalletAddress String?              @unique
+  transaction_no     Int
+  friends            Friend[]             @relation("UserEmailFriends")
+  transactions       Transaction[]        @relation("UserEmailTransactions")
 }
 
 model UserEOA {
-  id                 Int                 @id @default(autoincrement())
-  eoaAddress         String              @unique
+  id                 Int                  @id @default(autoincrement())
+  eoaAddress         String               @unique
   smartWalletAddress String?              @unique
-  transaction_no     Int                 
-  friends            Friend[]            @relation("UserEOAFriends")
+  transaction_no     Int
+  friends            Friend[]             @relation("UserEOAFriends")
+  transactions       Transaction[]        @relation("UserEOATransactions")
 }
 
 model Friend {
-  id                 Int                 @id @default(autoincrement())
-  name               String              @unique
-  address            String              @unique
-  transaction_no     Int            
-  userEmailId        Int?                
-  userEOAId          Int?                
-  userEmail          UserEmail?          @relation("UserEmailFriends", fields: [userEmailId], references: [id])
-  userEOA            UserEOA?            @relation("UserEOAFriends", fields: [userEOAId], references: [id])
+  id             Int                      @id @default(autoincrement())
+  name           String                   @unique
+  address        String                   @unique
+  transaction_no Int
+  userEmailId    Int?
+  userEOAId      Int?
+  userEmail      UserEmail?               @relation("UserEmailFriends", fields: [userEmailId], references: [id])
+  userEOA        UserEOA?                 @relation("UserEOAFriends", fields: [userEOAId], references: [id])
 
   @@unique([name, address, userEmailId])
   @@unique([name, address, userEOAId])
+}
+
+enum TransactionStatus {
+  success
+  reverted
+}
+
+model Transaction {
+  id              Int                  @id @default(autoincrement())
+  transactionHash String               @unique
+  blockNumber     String
+  from            String
+  gasUsed         String
+  status          TransactionStatus
+  to              String
+  type            String
+  userEmail       UserEmail?          @relation("UserEmailTransactions", fields: [userEmailId], references: [id])
+  userEOA         UserEOA?            @relation("UserEOATransactions", fields: [userEOAId], references: [id])
+  userEmailId     Int?
+  userEOAId       Int?
+
+  @@index([userEmailId], name: "userEmailId")
+  @@index([userEOAId], name: "userEOAId")
 }
