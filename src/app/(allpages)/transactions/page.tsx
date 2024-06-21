@@ -1,30 +1,119 @@
 "use client";
+import TransactionReceiptCard from "@/components/TransactionHistoryCard";
 
-import { P2pCard } from "@/components/P2pCard";
+type Address = string;
+type Hash = string;
+type Hex = string;
 
-const supportedChains = [
-    { id: 1, name: "ETH", quantity: 200, value: 300, image: "https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=032" },
-    { id: 2, name: "BSC", quantity: 50, value: 100, image: "https://cryptologos.cc/logos/bnb-bnb-logo.svg?v=032" },
-    { id: 3, name: "Matic", quantity: 500, value: 1000, image: "https://cryptologos.cc/logos/polygon-matic-logo.svg?v=032" },
-];
+type Log<quantity = bigint, index = number, removed = boolean> = {
+  address: Address;
+  data: Hex;
+  topics: Hex[];
+  blockHash: Hash;
+  blockNumber: quantity;
+  logIndex: index;
+  removed: removed;
+  transactionHash: Hash;
+  transactionIndex: index;
+};
 
-const P2P = () => {
+type TransactionType = string;
+
+type TransactionReceipt<quantity = bigint, index = number, status = "success" | "reverted", type = TransactionType> = {
+  blobGasPrice?: quantity;
+  blobGasUsed?: quantity;
+  blockHash: Hash;
+  blockNumber: quantity;
+  contractAddress: Address | null | undefined;
+  cumulativeGasUsed: quantity;
+  effectiveGasPrice: quantity;
+  from: Address;
+  gasUsed: quantity;
+  logs: Array<Log<quantity, index, false>>;
+  logsBloom: Hex;
+  root?: Hash;
+  status: status;
+  to: Address | null;
+  transactionHash: Hash;
+  transactionIndex: index;
+  type: type;
+};
+
+const sampleReceipts:TransactionReceipt[] = [
+    {
+      blockHash: '0x123abc...',
+      blockNumber: BigInt(123456),
+      contractAddress: null,
+      cumulativeGasUsed: BigInt(21000),
+      effectiveGasPrice: BigInt(20000000000),
+      from: '0xabc123...',
+      gasUsed: BigInt(21000),
+      logs: [],
+      logsBloom: '0x...',
+      status: 'success',
+      to: '0xdef456...',
+      transactionHash: '0x456def...',
+      transactionIndex: 1,
+      type: '0x0',
+    },
+    {
+      blockHash: '0x456def...',
+      blockNumber: BigInt(654321),
+      contractAddress: '0xcontract123...',
+      cumulativeGasUsed: BigInt(30000),
+      effectiveGasPrice: BigInt(25000000000),
+      from: '0x123abc...',
+      gasUsed: BigInt(30000),
+      logs: [],
+      logsBloom: '0x...',
+      status: 'reverted',
+      to: '0x789ghi...',
+      transactionHash: '0x789ghi...',
+      transactionIndex: 2,
+      type: '0x0',
+    },
+    {
+      blockHash: '0x789ghi...',
+      blockNumber: BigInt(987654),
+      contractAddress: null,
+      cumulativeGasUsed: BigInt(50000),
+      effectiveGasPrice: BigInt(30000000000),
+      from: '0xdef456...',
+      gasUsed: BigInt(50000),
+      logs: [],
+      logsBloom: '0x...',
+      status: 'success',
+      to: '0xabc123...',
+      transactionHash: '0xabc123...',
+      transactionIndex: 3,
+      type: '0x0',
+    },
+    {
+      blockHash: '0xabc123...',
+      blockNumber: BigInt(111222),
+      contractAddress: null,
+      cumulativeGasUsed: BigInt(15000),
+      effectiveGasPrice: BigInt(15000000000),
+      from: '0x789ghi...',
+      gasUsed: BigInt(15000),
+      logs: [],
+      logsBloom: '0x...',
+      status: 'success',
+      to: '0xdef456...',
+      transactionHash: '0xdef456...',
+      transactionIndex: 4,
+      type: '0x0',
+    }
+  ];
+
+const TransactionHistory = () => {
     return (
-        <div className='flex flex-col gap-4 p-4'>
-            <P2pCard />
-            <div className="flex flex-row bg-gray-800 rounded-xl w-full mt-4 p-2">
-                {supportedChains.map((chain) => (
-                    <div
-                        key={chain.id}
-                        className="flex flex-row items-center gap-2 hover:bg-gray-900 rounded-full h-full p-2 cursor-pointer transition-all duration-200 ease-in-out"
-                    >
-                        <img src={chain.image} alt={`${chain.name} logo`} className="w-6 h-6 rounded-full" />
-                        <span className="text-sm font-medium text-gray-200">{chain.name}</span>
-                    </div>
-                ))}
-            </div>
-        </div>
+        <div className="w-full h-[630px] overflow-y-auto p-4 space-y-4 bg-gray-900 rounded-lg shadow-md no-scrollbar">
+        {sampleReceipts.map((receipt, index) => (
+          <TransactionReceiptCard key={index} receipt={receipt} />
+        ))}
+      </div>
     );
 };
 
-export default P2P;
+export default TransactionHistory;

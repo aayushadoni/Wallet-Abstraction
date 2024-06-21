@@ -33,6 +33,8 @@ const TableRow: React.FC<TableRowProps> = ({
   volumeValue = '---',
   volumeCrypto = '---',
 }) => {
+  
+
   const graphImages = [
     'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/52.svg',
     'https://s3.coinmarketcap.com/generated/sparklines/web/7d/2781/1.svg',
@@ -58,40 +60,42 @@ const TableRow: React.FC<TableRowProps> = ({
   };
 
   return (
-    <tr className="bg-gray-800 hover:bg-gray-900 transition-colors text-white border-b border-gray-800 text-sm rounded-xl">
-      <td className="py-3 px-4">{starNum}</td>
-      <td className="py-3 px-4 cursor-pointer">
-        {coinIcon && (
-          <CoinNameRow name={coinName} icon={coinIcon} />
-        )}
-      </td>
-      <td className="py-3 px-4 cursor-pointer">
-        <p>${formatNum(price)}</p>
-      </td>
-      <td className="py-3 px-4">
-        <Rate isIncrement={hRateIsIncrement} rate={`${formatNum(hRate)}%`} />
-      </td>
-      <td className="py-3 px-4">
-        <Rate isIncrement={dRateIsIncrement} rate={`${formatNum(dRate)}%`} />
-      </td>
-      <td className="py-3 px-4">
-        <div>
-          <p>${formatNum(marketCapValue)}</p>
-        </div>
-      </td>
-      <td className="py-3 px-4">
-        <div>
-          <p>{formatNum(volumeValue)}</p>
-          <p className="text-gray-400 flex flex-row gap-2">
-            <p>{formatNum(volumeCrypto)}</p>
-            <p>{coinSymbol}</p>
-          </p>
-        </div>
-      </td>
-      <td className="py-3 px-4">
-        <Image src={getRandomGraph()} width={200} height={80} alt="" />
-      </td>
-    </tr>
+    <tbody>
+      <tr className="bg-gray-800 hover:bg-gray-900 transition-colors text-white border-b border-gray-800 text-sm rounded-xl">
+        <td className="py-3 px-4">{starNum}</td>
+        <td className="py-3 px-4 cursor-pointer">
+          {coinIcon && (
+            <CoinNameRow name={coinName} icon={coinIcon} />
+          )}
+        </td>
+        <td className="py-3 px-4 cursor-pointer">
+          <p>${formatNum(price)}</p>
+        </td>
+        <td className="py-3 px-4">
+          <Rate isIncrement={hRateIsIncrement} rate={`${formatNum(hRate)}%`} />
+        </td>
+        <td className="py-3 px-4">
+          <Rate isIncrement={dRateIsIncrement} rate={`${formatNum(dRate)}%`} />
+        </td>
+        <td className="py-3 px-4">
+          <div>
+            <p>${formatNum(marketCapValue)}</p>
+          </div>
+        </td>
+        <td className="py-3 px-4">
+          <div>
+            <p>{formatNum(volumeValue)}</p>
+            <div className="text-gray-400 flex flex-row gap-2">
+              <span>{formatNum(volumeCrypto)}</span>
+              <span>{coinSymbol}</span>
+            </div>
+          </div>
+        </td>
+        <td className="py-3 px-4">
+          <Image src={getRandomGraph()} width={200} height={80} alt="" />
+        </td>
+      </tr>
+    </tbody>
   );
 };
 

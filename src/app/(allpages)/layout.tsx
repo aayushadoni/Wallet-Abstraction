@@ -15,7 +15,6 @@ import { baseSepolia,sepolia} from "thirdweb/chains";
 import { createThirdwebClient } from "thirdweb";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { activeAccountAtom,smartWalletAddressAtom} from "../lib/states";
-import { useFetchTokenBalances } from "@/app/hooks/getTokenBalance";
 import { inAppWallet } from "thirdweb/wallets/in-app";
 import { createSmartWalletEmail } from "@/app/hooks/createSmartWalletEmail";
 
@@ -31,8 +30,6 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
     const setSmartWalletAddress = useSetRecoilState(smartWalletAddressAtom);
     const setActiveAccount = useSetRecoilState(activeAccountAtom);
     const [activeNetwork, setActiveNetwork] = useState(baseSepolia.name)
-
-    console.log(session?.user);
    
 
     useEffect(() => {
@@ -139,15 +136,12 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
         } catch (error) {
           console.error('Error fetching data:', error);
         }
-        await fetchTokenBalance();
       };
   
       fetchData();
     }, [status]);
 
     const router = useRouter()
-    const smartWalletValue = useRecoilValue(smartWalletAddressAtom);
-    const fetchTokenBalance = useFetchTokenBalances(smartWalletValue);
 
     const handleNetworkSwitch = (network: string) => {
       setActiveNetwork(network);

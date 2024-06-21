@@ -1,4 +1,9 @@
+import { useEffect } from "react";
 import React from "react";
+import { useRecoilValue } from "recoil";
+import { smartWalletAddressAtom } from "@/app/lib/states";
+import { useFetchTokenBalances } from "@/app/hooks/getTokenBalance";
+import { useSession } from "next-auth/react";
 
 interface Token {
   id: number;
@@ -9,6 +14,19 @@ interface Token {
 }
 
 export function HoldingsCard({ tokens }: { tokens: Token[] }): JSX.Element {
+
+  const SmartWalletAddress = useRecoilValue(smartWalletAddressAtom);
+  const fetchTokenBalance = useFetchTokenBalances(SmartWalletAddress);
+  const { data: session, status } = useSession()
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchTokenBalance();
+    };
+
+    fetchData();
+  },[status]);
+
   return (
     <div className="p-4 bg-gray-800 rounded-xl shadow-md w-full">
       <h1 className="text-lg font-semibold text-gray-200 mb-4">Holdings</h1>

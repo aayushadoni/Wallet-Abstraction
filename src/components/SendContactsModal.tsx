@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import axios from "axios";
 import { sepolia, bscTestnet, avalancheFuji, optimismSepolia, arbitrumSepolia, baseSepolia, polygonAmoy, Chain } from "thirdweb/chains";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { smartWalletAddressAtom, activeAccountAtom } from "@/app/lib/states";

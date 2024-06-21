@@ -89,7 +89,7 @@ export const PaymentCard = (): JSX.Element => {
             {supportedCoins.map((coin) => (
               <div
                 key={coin.id}
-                className="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-800 rounded-xl"
+                className="flex items-center gap-2 p-2 cursor-pointer hover:bg-gray-900 rounded-xl"
                 onClick={() => handleCoinChange(coin)}
               >
                 <img src={coin.img} alt={coin.name} className="w-6 h-6 rounded-full" />
