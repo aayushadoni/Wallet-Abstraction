@@ -62,26 +62,26 @@ model Transaction {
   @@index([userEOAId], name: "userEOAId")
 }
 
-model Order {
-  orderHash   String   @id
-  token       String
-  quantity    BigInt
-  price       BigInt
-  customerAddress String
-  createdAt   DateTime @default(now())
-  buy         Boolean
-}
+// model Order {
+//   orderHash   String   @id
+//   token       String
+//   quantity    BigInt
+//   price       BigInt
+//   customerAddress String
+//   createdAt   DateTime @default(now())
+//   buy         Boolean
+// }
 
-model FuturesContract {
-  contractHash String @id
-  amount Int
-  price Int
-  dueBlock Int
-  shortPosition String
-  shortMargin Int
-  longPosition String
-  longMargin Int
-  settlementPrice Int
-  longProfit Int
-  shortPrfit Int
-}
+// // model FuturesContract {
+// //   contractHash String @id
+// //   amount Int
+// //   price Int
+// //   dueBlock Int
+// //   shortPosition String
+// //   shortMargin Int
+// //   longPosition String
+// //   longMargin Int
+// //   settlementPrice Int
+// //   longProfit Int
+// //   shortPrfit Int
+// // }

@@ -1,3 +1,12 @@
+
+
+
+import { NextResponse } from 'next/server';
+
+export async function GET() {
+  return NextResponse.json({ message: 'Hello - GET' });
+}
+
 // import { NextRequest, NextResponse } from 'next/server';
 // import { db } from '@/app/lib/db';
 // import { authOptions } from '@/app/lib/auth';
