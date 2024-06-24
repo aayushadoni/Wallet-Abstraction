@@ -28,8 +28,8 @@ export function HoldingsCard({ tokens }: { tokens: Token[] }): JSX.Element {
   },[status]);
 
   return (
-    <div className="p-4 bg-gray-800 rounded-xl shadow-md w-full">
-      <h1 className="text-lg font-semibold text-gray-200 mb-4">Holdings</h1>
+    <div className="p-4 bg-gray-800 rounded-xl shadow-md w-full transform transition-transform duration-300 hover:scale-105">
+      <h1 className="text-xl font-semibold mb-4">Holdings</h1>
       <div className="grid gap-3">
         {tokens.map((token) => (
           <div key={token.id} className="flex items-center justify-between p-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300 ease-in-out">

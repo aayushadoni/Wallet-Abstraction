@@ -19,7 +19,7 @@ type Coin = {
 
 export function TrendingCard({ coins }: { coins: Coin[] }): JSX.Element {
   return (
-    <div className="p-6 rounded-xl shadow-md bg-blue-500 text-white">
+    <div className="p-6 rounded-xl shadow-md bg-blue-500 text-white transform transition-transform duration-300 hover:scale-105">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-xl font-semibold">Prices of Trending Coins 🔥</h1>
       </div>

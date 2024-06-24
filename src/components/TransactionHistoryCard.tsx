@@ -25,7 +25,7 @@ const TransactionReceiptCard: React.FC<TransactionReceiptCardProps> = ({ receipt
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-md p-6">
+    <div className="bg-gray-800 rounded-lg shadow-md p-4">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-2">
           {getStatusIcon(receipt.status)}
@@ -38,7 +38,7 @@ const TransactionReceiptCard: React.FC<TransactionReceiptCardProps> = ({ receipt
           href={`https://etherscan.io/tx/${receipt.transactionHash}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-blue-500 hover:text-blue-300"
+          className="text-blue-500 hover:text-blue-300 mb-6"
         >
           <FaExternalLinkAlt className="text-lg" />
         </a>

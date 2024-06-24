@@ -45,8 +45,8 @@ export default function Deposit () {
   }, []);
 
   return (
-    <div className='flex flex-col gap-2 p-4'>
-        <div className='flex flex-row gap-2'>
+    <div className='flex flex-col gap-4 p-4'>
+        <div className='flex flex-row gap-6'>
           <div className='w-1/2'>
             <DepositCard balance={1000} walletAddress={smartWalletAddressValue}/>
           </div>

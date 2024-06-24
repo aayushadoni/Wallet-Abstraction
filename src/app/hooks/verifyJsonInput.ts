@@ -8,11 +8,15 @@ interface AbiItem {
 }
 
 interface Transaction {
-  method: string;
-  params: (string | number)[];
+  method: `function ${string}`;
+  params: string[];
 }
 
-export const verifyTransactions = (abi: AbiItem[], transactionsJson: string): boolean => {
+interface JsonData {
+  transactions: Transaction[];
+}
+
+export const verifyTransactions = (abi: AbiItem[], transactions: Transaction[]): boolean => {
   const abiMethods: { [key: string]: string[] } = {};
 
   // Parse the ABI to get methods and their parameter types
@@ -21,15 +25,6 @@ export const verifyTransactions = (abi: AbiItem[], transactionsJson: string): bo
       abiMethods[item.name] = item.inputs.map(input => input.type);
     }
   });
-
-  // Parse the transactions JSON
-  let transactions: Transaction[];
-  try {
-    transactions = JSON.parse(transactionsJson);
-  } catch (error) {
-    console.error("Invalid JSON format");
-    return false;
-  }
 
   // Verify each transaction
   for (const tx of transactions) {
@@ -79,10 +74,10 @@ export const verifyTransactions = (abi: AbiItem[], transactionsJson: string): bo
 };
 
 // Helper function to validate parameter values based on their types
-const isValidParam = (type: string, value: string | number): boolean => {
+const isValidParam = (type: string, value: string): boolean => {
   switch (type) {
     case 'address':
-      return ethers.utils.isAddress(value as string);
+      return ethers.utils.isAddress(value);
     case 'uint256':
     case 'uint8':
     case 'uint':

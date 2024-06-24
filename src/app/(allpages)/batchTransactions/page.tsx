@@ -5,8 +5,10 @@ import SupportedCoins from "@/components/SupportedCoins";
 import { sepolia, bscTestnet, avalancheFuji, optimismSepolia, arbitrumSepolia, baseSepolia, polygonAmoy, Chain } from "thirdweb/chains";
 import { HiOutlineChevronDown } from 'react-icons/hi'
 import { BsFiletypeJson } from "react-icons/bs";
-import { prepareContractCall, toWei } from "thirdweb";
+import { prepareContractCall } from "thirdweb";
 import { verifyTransactions } from "@/app/hooks/verifyJsonInput";
+import { createThirdwebClient } from "thirdweb";
+import { getContract } from "thirdweb";
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-json';
 import 'ace-builds/src-noconflict/theme-pastel_on_dark';
@@ -19,8 +21,18 @@ const BatchTransactions = () => {
     inputs?: { type: string }[];
   }
 
-  const [jsonData, setJsonData] = useState({
-    "transactions": [
+  interface Transaction {
+    method: `function ${string}`;
+    params: string[];
+  }
+
+  const clientId = process.env.NEXT_PUBLIC_ThirdWebClientId as string
+        const client = createThirdwebClient({
+          clientId: clientId,
+        });
+
+  const [jsonData, setJsonData] = useState<Transaction[]>(
+    [
       {
         "method": "function mintTo(address to, uint256 amount)",
         "params": ["0x1234567890abcdef1234567890abcdef12345678", "100"]
@@ -34,7 +46,7 @@ const BatchTransactions = () => {
         "params": ["0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef", "200"]
       }
     ]
-  });
+  );
 
   const handleJsonChange = (content: any) => {
     try {
@@ -59,8 +71,8 @@ const BatchTransactions = () => {
   const [selectedChain, setSelectedChain] = useState(suportedChains[0]);
   const [dropdownOpenChain, setDropdownOpenChain] = useState(false);
   const [toggleJsonEditor, setToggleJsonEditor] = useState(false);
-  const [ABI, setABI] = useState<AbiItem[]>();
-  const [contractAddress, setContractAddress] = useState<string>();
+  const [ABI, setABI] = useState<AbiItem[]>([]);
+  const [contractAddress, setContractAddress] = useState<string>("");
 
   
 
@@ -113,6 +125,29 @@ const handleAbiChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
   }
 };
 
+const handleSubmit = async (event: React.FormEvent) => {
+
+  const res = verifyTransactions(ABI,jsonData);
+
+  if(res)
+    {
+
+      const contract = getContract({
+        client,
+        chain: selectedChain.chain,
+        address: contractAddress,
+      });
+
+      /// @ts-expect-error
+      const transactions = jsonData.map(tx => prepareContractCall({
+        contract:contract,
+        method: tx.method,
+        params: tx.params,
+      }));
+    }
+
+
+}
 
   return (
     <div className="p-2">

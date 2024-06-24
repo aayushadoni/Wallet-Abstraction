@@ -12,8 +12,8 @@ export function DepositCard({ balance, walletAddress }: { balance: number; walle
   };
 
   return (
-    <div className="p-8 rounded-2xl shadow-xl bg-gray-800 text-white h-full">
-      <h1 className="text-2xl font-bold mb-6">Add tokens to your Wallet</h1>
+    <div className="p-8 rounded-2xl shadow-xl bg-gray-800 text-white h-full transform transition-transform duration-300 hover:scale-105">
+      <h1 className="text-xl font-semibold mb-6">Add tokens to your Wallet</h1>
       <div className="flex gap-6 items-center">
         <div className="flex-shrink-0 mt-4 rounded-sm">
           <img src={`https://api.qrserver.com/v1/create-qr-code/?data=${walletAddress}&amp;size=135x135;margin=10`} alt="QR Code" className="w-40 h-40 rounded-lg border-2 border-gray-400" />

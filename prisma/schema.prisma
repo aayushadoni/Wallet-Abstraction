@@ -8,32 +8,32 @@ datasource db {
 }
 
 model UserEmail {
-  id                 Int                  @id @default(autoincrement())
-  email              String               @unique
-  smartWalletAddress String?              @unique
+  id                 Int           @id @default(autoincrement())
+  email              String        @unique
+  smartWalletAddress String?       @unique
   transaction_no     Int
-  friends            Friend[]             @relation("UserEmailFriends")
-  transactions       Transaction[]        @relation("UserEmailTransactions")
+  friends            Friend[]      @relation("UserEmailFriends")
+  transactions       Transaction[] @relation("UserEmailTransactions")
 }
 
 model UserEOA {
-  id                 Int                  @id @default(autoincrement())
-  eoaAddress         String               @unique
-  smartWalletAddress String?              @unique
+  id                 Int           @id @default(autoincrement())
+  eoaAddress         String        @unique
+  smartWalletAddress String?       @unique
   transaction_no     Int
-  friends            Friend[]             @relation("UserEOAFriends")
-  transactions       Transaction[]        @relation("UserEOATransactions")
+  friends            Friend[]      @relation("UserEOAFriends")
+  transactions       Transaction[] @relation("UserEOATransactions")
 }
 
 model Friend {
-  id             Int                      @id @default(autoincrement())
-  name           String                   @unique
-  address        String                   @unique
+  id             Int        @id @default(autoincrement())
+  name           String     @unique
+  address        String     @unique
   transaction_no Int
   userEmailId    Int?
   userEOAId      Int?
-  userEmail      UserEmail?               @relation("UserEmailFriends", fields: [userEmailId], references: [id])
-  userEOA        UserEOA?                 @relation("UserEOAFriends", fields: [userEOAId], references: [id])
+  userEmail      UserEmail? @relation("UserEmailFriends", fields: [userEmailId], references: [id])
+  userEOA        UserEOA?   @relation("UserEOAFriends", fields: [userEOAId], references: [id])
 
   @@unique([name, address, userEmailId])
   @@unique([name, address, userEOAId])
@@ -45,19 +45,43 @@ enum TransactionStatus {
 }
 
 model Transaction {
-  id              Int                  @id @default(autoincrement())
-  transactionHash String               @unique
+  id              Int               @id @default(autoincrement())
+  transactionHash String            @unique
   blockNumber     String
   from            String
   gasUsed         String
   status          TransactionStatus
   to              String
   type            String
-  userEmail       UserEmail?          @relation("UserEmailTransactions", fields: [userEmailId], references: [id])
-  userEOA         UserEOA?            @relation("UserEOATransactions", fields: [userEOAId], references: [id])
+  userEmail       UserEmail?        @relation("UserEmailTransactions", fields: [userEmailId], references: [id])
+  userEOA         UserEOA?          @relation("UserEOATransactions", fields: [userEOAId], references: [id])
   userEmailId     Int?
   userEOAId       Int?
 
   @@index([userEmailId], name: "userEmailId")
   @@index([userEOAId], name: "userEOAId")
+}
+
+model Order {
+  orderHash   String   @id
+  token       String
+  quantity    BigInt
+  price       BigInt
+  customerAddress String
+  createdAt   DateTime @default(now())
+  buy         Boolean
+}
+
+model FuturesContract {
+  contractHash String @id
+  amount Int
+  price Int
+  dueBlock Int
+  shortPosition String
+  shortMargin Int
+  longPosition String
+  longMargin Int
+  settlementPrice Int
+  longProfit Int
+  shortPrfit Int
 }
