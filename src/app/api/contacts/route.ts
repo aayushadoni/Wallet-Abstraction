@@ -3,6 +3,35 @@ import { db } from '@/app/lib/db';
 import { authOptions } from '@/app/lib/auth';
 import { getServerSession } from 'next-auth';
 
+export async function GET(req: NextRequest) {
+    try {
+      const session = await getServerSession(authOptions);
+  
+      if (!session) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+      let friendsData;
+      if (session.user.email) {
+        friendsData = await db.userEmail.findFirst({
+          where: { email: session.user.email },
+          include: { friends: true },
+        });
+      } else if (session.user.eoaAddress) {
+        friendsData = await db.userEOA.findFirst({
+          where: { eoaAddress: session.user.eoaAddress },
+          include: { friends: true },
+        });
+      } else {
+        return NextResponse.json({ error: 'User session is invalid' }, { status: 400 });
+      }
+  
+      return NextResponse.json({ success: true, friendsData: friendsData });
+    } catch (error) {
+      console.error('Error adding friend:', error);
+      return NextResponse.json({ error: 'Failed to add friend' }, { status: 500 });
+    }
+  }
+
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -166,4 +195,3 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to update friend' }, { status: 500 });
   }
 }
-
