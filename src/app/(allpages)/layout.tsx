@@ -41,7 +41,7 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
           clientId: clientId,
         });
 
-        if (session?.user.email && status == "authenticated" && session?.user.verificationCode) {
+        if (session?.user.email && status == "authenticated" && session?.user.verificationCode && !activeAccountValue) {
           const eoaWallet = inAppWallet();
 
           const eoaAccount = await eoaWallet.connect({
