@@ -37,7 +37,7 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
       try {
         const hasRun = sessionStorage.getItem('hasRun');
         if (hasRun) {
-          return; // Exit if the code has already run during this session
+          return;
         }
 
         const clientId = process.env.NEXT_PUBLIC_ThirdWebClientId as string;
@@ -69,7 +69,6 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
           setActiveAccount(eoaAccount);
           await createSmartWalletEmail(eoaAccount, account);
 
-          // Set flag to indicate the code has run
           sessionStorage.setItem('hasRun', 'true');
         }
 
