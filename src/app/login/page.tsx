@@ -9,7 +9,6 @@ import { Account } from 'thirdweb/wallets';
 import { useSetRecoilState } from 'recoil';
 import { activeAccountAtom } from '@/app/lib/states';
 import { preAuthenticate } from "thirdweb/wallets/in-app";
-import { inAppWallet } from "thirdweb/wallets/in-app";
 
 
 
@@ -30,23 +29,12 @@ export default function Home() {
 
     const onSubmit = async (e:any)=>{
         e.preventDefault();
-
-        const eoaWallet = inAppWallet();
-
-        const eoaAccount = await eoaWallet.connect({
-        client,
-        strategy: "email",
-        email: email.current,
-        verificationCode: verificationCode.current,
-        });
-        setActiveAccountAtom(eoaAccount);
-        console.log(eoaAccount);
-
-        await signIn("email-login", {
-        email:email.current,
-        redirect:true,
-        callbackUrl:"/wallet"
-        });
+            await signIn("email-login", {
+            email:email.current,
+            verificationCode:verificationCode.current,
+            redirect:true,
+            callbackUrl:"/wallet"
+        })
     }
 
     const sendCode = async ()=>{
