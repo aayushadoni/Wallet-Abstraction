@@ -3,8 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import z from "zod";
 
 const emailCredentialsInput = z.object({
-    email: z.string().email(),
-    verificationCode: z.string()
+    email: z.string().email()
 })
 
 const walletCredentialsInput = z.object({
@@ -19,11 +18,10 @@ export const authOptions = {
           name: 'email-login',
           credentials: {
             email: { label: "email", type: "email", placeholder: "a@b.com", required: false },
-            verificationCode: { label: "verificationCode", type: "text", placeholder: "20588", required: false },
           },
           async authorize(credentials: any) {
 
-            const { success } = emailCredentialsInput.safeParse({email:credentials.email,verificationCode:credentials.verificationCode});
+            const { success } = emailCredentialsInput.safeParse({email:credentials.email});
             if(!success)
                 {return null;}
             
@@ -39,7 +37,6 @@ export const authOptions = {
                         id: existingUser.id.toString(),
                         email: existingUser.email,
                         smartWalletAddress: existingUser.smartWalletAddress,
-                        verificationCode:credentials.verificationCode,
                     }
             }
 
@@ -55,7 +52,6 @@ export const authOptions = {
                 return {
                     id: user.id.toString(),
                     email: user.email,
-                    verificationCode:credentials.verificationCode,
                 }
             } catch(e) {
                 console.error(e);

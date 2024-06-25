@@ -11,7 +11,7 @@ import { signOut, useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { smartWallet, createWallet, injectedProvider } from "thirdweb/wallets";
 import { useEffect, useState } from "react";
-import { baseSepolia, sepolia } from "thirdweb/chains";
+import { baseSepolia } from "thirdweb/chains";
 import { createThirdwebClient } from "thirdweb";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { activeAccountAtom, smartWalletAddressAtom } from "../lib/states";
@@ -31,7 +31,7 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
   const setSmartWalletAddress = useSetRecoilState(smartWalletAddressAtom);
   const setActiveAccount = useSetRecoilState(activeAccountAtom);
   const [activeNetwork, setActiveNetwork] = useState(baseSepolia.name)
-
+  console.log("activeAccountValue",activeAccountValue)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,15 +41,8 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
           clientId: clientId,
         });
 
-        if (session?.user.email && status == "authenticated" && session?.user.verificationCode && activeAccountValue==null) {
-          const eoaWallet = inAppWallet();
-
-          const eoaAccount = await eoaWallet.connect({
-            client,
-            strategy: "email",
-            email: session?.user.email,
-            verificationCode: session?.user.verificationCode,
-          });
+        if (session?.user.email && status == "authenticated" && activeAccountValue != null) {
+          const eoaWallet = activeAccountValue;
 
           const wallet = smartWallet({
             chain: baseSepolia,
@@ -58,12 +51,11 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
 
           const account = await wallet.connect({
             client,
-            personalAccount: eoaAccount,
+            personalAccount: eoaWallet,
           });
 
           setSmartWalletAddress(account.address);
-          setActiveAccount(eoaAccount);
-          await createSmartWalletEmail(eoaAccount, account);
+          await createSmartWalletEmail(eoaWallet, account);
 
         }
         else if (session?.user.eoaAddress && status == "authenticated") {
