@@ -30,11 +30,7 @@ export default function Home() {
 
     const onSubmit = async (e:any)=>{
         e.preventDefault();
-            await signIn("email-login", {
-            email:email.current,
-            redirect:true,
-            callbackUrl:"/wallet"
-        })
+
         const eoaWallet = inAppWallet();
 
         const eoaAccount = await eoaWallet.connect({
@@ -44,7 +40,13 @@ export default function Home() {
         verificationCode: verificationCode.current,
         });
         setActiveAccountAtom(eoaAccount);
-        console.log(eoaAccount)
+        console.log(eoaAccount);
+
+        await signIn("email-login", {
+        email:email.current,
+        redirect:true,
+        callbackUrl:"/wallet"
+        });
     }
 
     const sendCode = async ()=>{
