@@ -36,12 +36,13 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const hasRun = sessionStorage.getItem('hasRun');
         const clientId = process.env.NEXT_PUBLIC_ThirdWebClientId as string
         const client = createThirdwebClient({
           clientId: clientId,
         });
 
-        if (session?.user.email && status == "authenticated" && session?.user.verificationCode && activeAccountValue===null) {
+        if (session?.user.email && status == "authenticated" && session?.user.verificationCode && activeAccountValue===null && !hasRun) {
           const eoaWallet = inAppWallet();
 
           const eoaAccount = await eoaWallet.connect({
@@ -129,7 +130,7 @@ export default function Layout({ children }: { children: React.ReactNode }): JSX
           }
 
         }
-
+        sessionStorage.setItem('hasRun', 'true');
       } catch (error) {
         console.error('Error fetching data:', error);
       }
